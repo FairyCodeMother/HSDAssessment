@@ -16,16 +16,19 @@
 
 *I spent over a day fighting Ruby and Rails version issues. I spent too much time un/re-installing a variety of things (eg: Ruby, XCode tools, OpenSSL, Homebrew, RVM, etc), trying the solution here ([OpenSSL error installing Ruby](https://johnskinnerportfolio.com/blog/ruby_330_error.html)), and so much more trying to force Ruby 3+/Rails 7+ into the project. In the end, I decided to just make a Docker'ed project and bypass the issue. There's nothing in the assignment about containerizing, so I hope this direction is acceptable.*
 
+Configure Docker Compose to orchestrate the services.
+Create a New Rails Application
 
 
 ### Gina's Notes:
 
- 1. Set Up the Rails Project:
-    - Ensure the Rails project HopSkipChallenge is created and Dockerized.
-    - Ensure necessary gems are included in the Gemfile (e.g., rails, pg, rspec-rails).
- 2. Configure the Database:
-    - Set up PostgreSQL as the database.
-    - Create necessary tables (drivers, rides, etc.) with appropriate fields.
+ 1. Set Up the Docker and Rails Project
+    - Create Docker files for Ruby 3+, PostgreSQL, etc
+    - Necessary gems (eg: Rails 7+)
+    - Configure to use PostgreSQL
+ 2. Model Design
+    - Define the Ride and Driver models.
+    - Set up associations
  3. Set Up Google Directions API:
     - Integrate Google Directions API.
     - Implement a service to handle API requests and responses.
