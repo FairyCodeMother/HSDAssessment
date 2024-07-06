@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: postgres
+  password: password
+  host: db
+
+development:
+  <<: *default
+  database: hop_skip_challenge_development
+
+test:
+  <<: *default
+  database: hop_skip_challenge_test
+
+production:
+  <<: *default
+  database: hop_skip_challenge_production
+  username: hop_skip_challenge
+  password: <%= ENV['HOP_SKIP_CHALLENGE_DATABASE_PASSWORD'] %>
