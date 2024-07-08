@@ -26,70 +26,27 @@ Create a New Rails Application
     - Create Docker files for Ruby 3+, PostgreSQL, etc
     - Necessary gems (eg: Rails 7+)
     - Configure to use PostgreSQL
- 2. Model Design
+ 2. Model Design and Definitions
     - Define the Ride and Driver tables and models
     - Set up associations
- 3. Set Up Google Directions API:
+    - Define Driver and Ride models with necessary relationships and validations
+ 3. Set Up Google Directions API
     - Integrate Google Directions API.
     - Implement a service to handle API requests and responses.
- 4. Model Definitions:
-    - Define Driver and Ride models with necessary relationships and validations.
- 5. Internal Scoring System:
+ 4. Internal Scoring System:
     - Implement the scoring algorithm to calculate the ride score.
     - Ensure the algorithm considers ride earnings, commute duration, and ride duration.
- 6. API Endpoint Implementation:
+ 5. API Endpoint Implementation:
     - Create a RESTful API endpoint to return the paginated JSON list of rides.
     - Implement logic to order rides by score in descending order for a given driver.
- 7. Caching Mechanism:
+ 6. Caching Mechanism:
     - Implement caching to reduce duplicate API calls to Google Directions API.
- 8. RSpec Tests:
+ 7. RSpec Tests:
     - Set up RSpec and write tests for models, services, and API endpoints.
- 9. Docker Configuration:
+ 8. Docker Configuration:
     - Ensure Docker configuration is properly set up for the Rails app, including dependencies.
 
-**Proposed Directory/File Structure**
-```
-HopSkipChallenge/
-├── app/
-│   ├── controllers/
-│   │   ├── api/
-│   │   │   └── rides_controller.rb
-│   │   └── application_controller.rb
-│   ├── models/
-│   │   ├── driver.rb
-│   │   └── ride.rb
-│   ├── services/
-│   │   └── google_directions_service.rb
-│   ├── serializers/
-│   │   └── ride_serializer.rb
-│   └── views/
-├── config/
-│   ├── initializers/
-│   │   └── google_directions.rb
-│   ├── routes.rb
-│   └── database.yml
-├── db/
-│   ├── migrate/
-│   ├── schema.rb
-│   └── seeds.rb
-├── spec/
-│   ├── controllers/
-│   │   └── api/
-│   │       └── v1/
-│   │           └── rides_controller_spec.rb
-│   ├── models/
-│   │   ├── driver_spec.rb
-│   │   └── ride_spec.rb
-│   ├── services/
-│   │   └── google_directions_service_spec.rb
-│   ├── serializers/
-│   │   └── ride_serializer_spec.rb
-│   └── spec_helper.rb
-├── Dockerfile
-├── docker-compose.yml
-├── Gemfile
-└── Gemfile.lock
-```
+
 
 
 Set Up Models, Relationships, etc
