@@ -30,10 +30,11 @@ Create a New Rails Application
     - Define the Ride and Driver tables and models
     - Set up associations
     - Define Driver and Ride models with necessary relationships and validations
+    - Seed file with Faker Gem
  3. Set Up Google Directions API
     - Integrate Google Directions API.
     - Implement a service to handle API requests and responses.
- 4. Internal Scoring System:
+ 4. Internal Scoring System
     - Implement the scoring algorithm to calculate the ride score.
     - Ensure the algorithm considers ride earnings, commute duration, and ride duration.
  5. API Endpoint Implementation:
@@ -105,4 +106,6 @@ Misc
   - The function that derives this value will be used to populate `:ride_distance_hours` and `:commute_distance_hours`
 
 -----
+
+
 
