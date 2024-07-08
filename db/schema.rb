@@ -10,29 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_06_050722) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_08_012414) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "drivers", force: :cascade do |t|
-    t.string "home_address"
+    t.string "driver_id", null: false
+    t.string "home_address", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["driver_id"], name: "index_drivers_on_driver_id", unique: true
   end
 
   create_table "rides", force: :cascade do |t|
-    t.string "start_address"
-    t.string "destination_address"
-    t.bigint "driver_id", null: false
-    t.float "commute_distance"
-    t.float "commute_duration"
-    t.float "ride_distance"
-    t.float "ride_duration"
-    t.float "earnings"
+    t.string "ride_id", null: false
+    t.string "start_address", null: false
+    t.string "destination_address", null: false
+    t.float "ride_distance_miles"
+    t.float "ride_duration_hours"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["driver_id"], name: "index_rides_on_driver_id"
+    t.index ["ride_id"], name: "index_rides_on_ride_id", unique: true
   end
 
-  add_foreign_key "rides", "drivers"
 end

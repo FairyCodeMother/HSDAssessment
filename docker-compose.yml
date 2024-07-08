@@ -13,5 +13,5 @@ services:
       - "3000:3000"
     depends_on:
       - db
-    environment:
-      DATABASE_URL: postgres://postgres:password@db:5432/HopSkipChallenge_development
+    env_file:
+      - .env

@@ -27,7 +27,7 @@ Create a New Rails Application
     - Necessary gems (eg: Rails 7+)
     - Configure to use PostgreSQL
  2. Model Design
-    - Define the Ride and Driver models.
+    - Define the Ride and Driver tables and models
     - Set up associations
  3. Set Up Google Directions API:
     - Integrate Google Directions API.
@@ -92,4 +92,60 @@ HopSkipChallenge/
 ```
 
 
+Set Up Models, Relationships, etc
+
+
+```
+// Drivers- Entity that can accept a Ride to start a Trip
+
+docker-compose run web rails generate model Driver driver_id:string home_address:string
+```
+- String `:driver_id` (null: false)
+  - unique identifier
+- String `:home_address` (null: false)
+- Timestamp `:created_at`
+
+
+```
+// Ride- Can be chosen by a Driver for a trip
+
+docker-compose run web rails generate model Ride ride_id:string start_address:string destination_address:string ride_distance_miles:float ride_duration_hours:float
+```
+- String `:ride_id` (null: false)
+  - unique identifier
+- String `:start_address` (null: false)
+- String `:destination_address` (null: false)
+- Float `:ride_distance_miles`
+  - Driving distance (in miles) from the `Ride:start_address` to `Ride:destination_address`
+- Float `:ride_duration_hours`
+  - Amount of time (in hours) to drive `:ride_distance_miles`
+- Timestamps `:created_at` (null: false)
+
+Trip- Created when a Driver chooses a Ride
+- String `:trip_id` (null: false)
+  - unique identifier
+- References `:driver_id` (null: false, foreign_key: true)
+- References `:ride_id` (null: false, foreign_key: true)
+- Float `:commute_distance_miles`
+  - Distance (miles) between `Driver:home_address` and `Ride:start_address` (calculated using routing service)
+- Float `:commute_duration_hours`
+  - Amount of time (in hours) to drive `:commute_distance_miles`
+- Float `:trip_distance_miles`
+  - `:ride_distance_miles` + `:commute_distance_miles`
+- Float `:trip_duration_hours`
+  - `:ride_duration_hours` + `:commute_duration_hours`
+- Float `:ride_earnings`
+  - Amount (in dollars and cents) the driver earns by driving the Trip
+    - $12 + $1.50 per mile beyond 5 miles + (`:ride_duration`) * $0.70 per minute beyond 15 minutes
+
+
+Misc
+- (Float) `:driving_distance`
+  - Distance (miles) between two addresses (calculated using routing service)
+  - The function that derives this value will be used to populate `:ride_distance_miles` and `:commute_distance_miles`
+- (Float) `:driving_duration`
+  - Time (hours) to drive `:driving_distance` (calculated using routing service)
+  - The function that derives this value will be used to populate `:ride_distance_hours` and `:commute_distance_hours`
+
+-----
 

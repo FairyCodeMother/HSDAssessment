@@ -1,21 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  ride_id: MyString
   start_address: MyString
   destination_address: MyString
-  driver: one
-  commute_distance: 1.5
-  commute_duration: 1.5
-  ride_distance: 1.5
-  ride_duration: 1.5
-  earnings: 1.5
+  ride_distance_miles: 1.5
+  ride_duration_hours: 1.5
 
 two:
+  ride_id: MyString
   start_address: MyString
   destination_address: MyString
-  driver: two
-  commute_distance: 1.5
-  commute_duration: 1.5
-  ride_distance: 1.5
-  ride_duration: 1.5
-  earnings: 1.5
+  ride_distance_miles: 1.5
+  ride_duration_hours: 1.5
