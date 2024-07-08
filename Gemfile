@@ -41,7 +41,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
-# https://github.com/edwardsamuel/google-maps-services-ruby
+# Google Maps Web Service API: for Distance Matrix
 gem 'google_maps_service'
 
 gem 'faker'

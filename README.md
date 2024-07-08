@@ -23,17 +23,22 @@ Create a New Rails Application
 ### Gina's Notes:
 
  1. Set Up the Docker and Rails Project
-    - Create Docker files for Ruby 3+, PostgreSQL, etc
+    - Create Docker for Ruby 3+, PostgreSQL, etc
     - Necessary gems (eg: Rails 7+)
-    - Configure to use PostgreSQL
+    - Environment and secrets control
  2. Model Design and Definitions
     - Define the Ride and Driver tables and models
     - Set up associations
-    - Define Driver and Ride models with necessary relationships and validations
+    - Define Driver and Ride relationships
     - Seed file with Faker Gem
  3. Set Up Google Directions API
-    - Integrate Google Directions API.
-    - Implement a service to handle API requests and responses.
+    - Integrate Google Directions API
+      - Docker secrets
+    - Implement GoogleDirectionsService
+      - Use Distance Matrix
+      - Service calculates the durations and distances between two points
+        - Called by Calculator Model
+      - Rides and Trips Controllers call Calculator
  4. Internal Scoring System
     - Implement the scoring algorithm to calculate the ride score.
     - Ensure the algorithm considers ride earnings, commute duration, and ride duration.
