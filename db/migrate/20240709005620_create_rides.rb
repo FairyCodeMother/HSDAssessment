@@ -5,8 +5,8 @@ class CreateRides < ActiveRecord::Migration[7.1]
       t.integer :ride_id
       t.string :starting_address
       t.string :destination_address
-      t.decimal :ride_duration, precision: 10, scale: 2
-      t.decimal :ride_distance, precision: 10, scale: 2
+      t.decimal :ride_duration, precision: 10, scale: 2 # in hours
+      t.decimal :ride_distance, precision: 10, scale: 2 # in miles
 
       t.timestamps
     end

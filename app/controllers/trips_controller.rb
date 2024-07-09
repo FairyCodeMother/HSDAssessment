@@ -9,7 +9,3 @@ class TripsController < ApplicationController
     render json: { times: hours, distances: miles }
   end
 end
-  
-
-
-
