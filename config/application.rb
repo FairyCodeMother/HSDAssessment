@@ -1,3 +1,4 @@
+# config/application.rb
 require_relative "boot"
 
 require "rails/all"
@@ -23,5 +24,8 @@ module HopSkipChallenge
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Add app/services and app/utils to the autoload paths
+    config.autoload_paths += %W(#{config.root}/app/services #{config.root}/app/utils)
   end
 end

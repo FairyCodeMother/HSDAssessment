@@ -4,12 +4,12 @@ class RideScoringService
     # Higher $ is better
     def self.calculate_score(ride_earnings, commute_duration, ride_duration)
         
-        # Replace with Trip total_duration
+        # TODO: Replace with Trip total_duration
         total_duration = commute_duration + ride_duration
       
-        score = ride_earnings.to_f / total_duration.to_f # Calculate $ score per hour
+        score = ride_earnings.to_f / total_duration.to_f # Calculate score$ per hour
       
-        score.round(2)
+        score.round(2) # in dollars
     end
 end
   
