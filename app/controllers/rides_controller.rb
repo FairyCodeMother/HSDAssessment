@@ -25,13 +25,28 @@ class RidesController < ApplicationController
 
     # Returns a paginated JSON list of rides in descending score order for a given driver
     # Calculate the score of a Trip (ride in $ per hour as: (ride earnings) / (commute duration + ride duration))
+    # GET /rides/get_trips_by_driver
     def get_trips_by_driver
+        # This gets the driver_id from the URL
         driver_id = params[:id]
+
+        # Execute SQL query to fetch driver_id from drivers table
+        result = ActiveRecord::Base.connection.execute("SELECT driver_id FROM drivers LIMIT 1")
     
-        render json: {
-            driver_id: driver_id,
-            message: "you made it"
-        }
+        # Extract driver_id from the result (assuming it returns one row)
+        if result.any?
+            result_id = result.first['driver_id']
+            render json: { 
+                driver_id: driver_id,
+                message: "you made it! your num: #{driver_id} and our num: #{result_id}!"
+
+             }
+        else
+            render json: { error: "No driver found" }, status: :not_found
+        end
+    
+    rescue ActiveRecord::StatementInvalid => e
+        render json: { error: e.message }, status: :internal_server_error
         
         # Fetch the trips for the given driver_id. Assuming you have a Ride model.
         # @trips = Ride.where(driver_id: driver_id)
@@ -43,4 +58,3 @@ class RidesController < ApplicationController
       end
 
 end
-  

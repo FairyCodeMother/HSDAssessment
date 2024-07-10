@@ -4,64 +4,21 @@
 #   - Distance/duration of the Driver's commute (Driver's home_address to Ride's start_address)
 #   - Distance/duration for the Ride (Ride's start_address to Ride's destination_address)
 class Trip < ApplicationRecord
-  # Include any required modules
-  require 'google_directions_service'
-  require 'trip_calculator'
 
-  # via their primary keys
-  has_one :driver
-  has_one :ride
+  self.primary_key = 'trip_id'
+  belongs_to :driver, primary_key: 'driver_id', foreign_key: 'driver_id'
+  belongs_to :ride, primary_key: 'ride_id', foreign_key: 'ride_id'
 
-  validates :home_address, :start_address, :destination_address, presence: true
-  validates :home_address, :start_address, :destination_address, length: { maximum: 255 }
-  validates :ride_earnings, numericality: { greater_than_or_equal_to: 0 }
+  validates :driver_id, :ride_id, presence: true
+  validates :commute_duration, :commute_distance, :total_duration, :total_distance, numericality: { greater_than: 0 }, allow_nil: true
 
-  # Define attributes
-  attribute :home_address, :string
-  attribute :start_address, :string
-  attribute :destination_address, :string
-  attribute :ride_earnings, :decimal, default: 0
-  attribute :commute_distance, :decimal, default: 0
-  attribute :commute_duration, :decimal, default: 0
-  attribute :ride_distance, :decimal, default: 0
-  attribute :ride_duration, :decimal, default: 0
-  attribute :total_distance, :decimal, default: 0
-  attribute :total_duration, :decimal, default: 0
-
-  attr_accessor :commute_distance, :commute_duration, :total_distance, :total_duration
-
-
-  def calculate_commute_duration
-    TripCalculator.new.calculate_duration([home_address], [start_address])
-  end
-
-  def calculate_commute_distance
-    TripCalculator.new.calculate_distance([home_address], [start_address])
-  end
-
-  def calculate_total_duration
-    total_trip = TripCalculator.new.calculate_trip_duration(home_address, start_address, destination_address)
-    total_trip.total_duration
-    # calculate_commute_duration + Ride.find(ride_id).ride_duration
-  end
-
-  def calculate_total_distance
-    total_trip = TripCalculator.new.calculate_trip_distance(home_address, start_address, destination_address)
-    total_trip.total_distance
-    # calculate_commute_distance + Ride.find(ride_id).ride_distance
-  end
-
-
-  before_save :set_distances_and_durations
-
+  # Callbacks
+  before_create :set_trip_id
 
   private
 
-  def set_distances_and_durations
-    self.commute_duration = calculate_commute_duration
-    self.commute_distance = calculate_commute_distance
-    self.total_duration = calculate_total_duration
-    self.total_distance = calculate_total_distance
+  def set_trip_id
+    self.trip_id = "t#{SecureRandom.uuid}" if trip_id.blank?
   end
 end
 

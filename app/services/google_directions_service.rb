@@ -10,20 +10,20 @@ class GoogleDirectionsService
 
   # calculates distance between two points
   def get_distance_miles(origins, destinations)
-    result = get_distance_matrix(origins, destinations)
-    distance = result[:rows][0][:elements][0][:distance][:value]
-
-    distance_miles = distance/1609.34 # Convert meters to miles
-    distance_miles
+    # result = get_distance_matrix(origins, destinations)
+    # distance = result[:rows][0][:elements][0][:distance][:value]
+    # distance_miles = distance / 1609.34 # Convert meters to miles
+    # distance_miles
+    40
   end
 
   # calculates duration between two points
   def get_duration_hours(origins, destinations)
-    result = get_distance_matrix(origins, destinations)
-    duration = result[:rows][0][:elements][0][:duration][:value]
-
-    duration_hours = duration/3600.0 # Convert seconds to hours    
-    duration_hours
+    # result = get_distance_matrix(origins, destinations)
+    # duration = result[:rows][0][:elements][0][:duration][:value]
+    # duration_hours = duration / 3600.0 # Convert seconds to hours    
+    # duration_hours
+    4
   end
   
   # Multiple parameters distance matrix

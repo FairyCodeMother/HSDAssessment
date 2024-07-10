@@ -2,39 +2,22 @@
 
 # A Ride consists of a start_address and destination_address. It uses these (via GoogleDirectionsService) to derive the ride_distance (decimal, in miles) and ride_duration (decimal, in hours)
 class Ride < ApplicationRecord
-  # Include any required modules
-  require 'google_directions_service'
-  require 'trip_calculator'
+  # Validations
+  validates :pickup_address, :destination_address, presence: true
+  validates :pickup_address, :destination_address, length: { maximum: 255 }
+  validates :ride_duration, :ride_distance, presence: true, numericality: { greater_than: 0 }
 
-    # Define validations
-  validates :start_address, :destination_address, presence: true
-  validates :start_address, :destination_address, length: { maximum: 255 }
+  attribute :ride_id, :string
 
-  # Define attributes
-  attribute :start_address, :string
-  attribute :destination_address, :string
-  attribute :ride_distance, :decimal, default: 0
-  attribute :ride_duration, :decimal, default: 0
-
-  attr_accessor :start_address, :destination_address, :ride_distance, :ride_duration
+  self.primary_key = 'ride_id'
   
-  def calculate_ride_duration
-    GoogleDirectionsService.new.get_duration_hours([start_address], [destination_address])
-  end
-
-  def calculate_ride_distance
-    GoogleDirectionsService.new.get_distance_miles([start_address], [destination_address])
-  end
-
-
-  # Callback to calculate distances and durations before saving
-  before_save :set_distances_and_durations
-
+  # Callbacks
+  before_create :set_ride_id
+  
   private
-
-  def set_distances_and_durations
-    self.ride_duration = calculate_ride_duration
-    self.ride_distance = calculate_ride_distance
+  
+  def set_ride_id
+    self.ride_id = "r#{SecureRandom.uuid}" if ride_id.blank?
   end
 end
 
