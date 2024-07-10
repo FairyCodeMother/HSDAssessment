@@ -10,42 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_09_010646) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_10_040009) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "drivers", force: :cascade do |t|
-    t.integer "driver_id"
-    t.string "home_address"
+  create_table "drivers", primary_key: "driver_id", id: :string, force: :cascade do |t|
+    t.string "name", limit: 255, null: false
+    t.string "home_address", limit: 255, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["driver_id"], name: "index_drivers_on_driver_id"
   end
 
-  create_table "rides", force: :cascade do |t|
-    t.integer "ride_id"
-    t.string "starting_address"
-    t.string "destination_address"
-    t.decimal "ride_duration", precision: 10, scale: 2
-    t.decimal "ride_distance", precision: 10, scale: 2
+  create_table "rides", primary_key: "ride_id", id: :string, force: :cascade do |t|
+    t.string "pickup_address", limit: 255, null: false
+    t.string "destination_address", limit: 255, null: false
+    t.decimal "ride_duration", precision: 10, scale: 2, null: false
+    t.decimal "ride_distance", precision: 10, scale: 2, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["ride_id"], name: "index_rides_on_ride_id"
   end
 
-  create_table "trips", force: :cascade do |t|
-    t.bigint "ride_id", null: false
-    t.bigint "driver_id", null: false
+  create_table "trips", primary_key: "trip_id", id: :string, force: :cascade do |t|
+    t.string "driver_id", null: false
+    t.string "ride_id", null: false
     t.decimal "commute_duration", precision: 10, scale: 2
     t.decimal "commute_distance", precision: 10, scale: 2
     t.decimal "total_duration", precision: 10, scale: 2
     t.decimal "total_distance", precision: 10, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["driver_id"], name: "index_trips_on_driver_id"
-    t.index ["ride_id"], name: "index_trips_on_ride_id"
   end
 
-  add_foreign_key "trips", "drivers"
-  add_foreign_key "trips", "rides"
+  add_foreign_key "trips", "drivers", primary_key: "driver_id"
+  add_foreign_key "trips", "rides", primary_key: "ride_id"
 end

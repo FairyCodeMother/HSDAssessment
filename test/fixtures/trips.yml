@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  driver: one
+  ride: one
+  commute_duration: 9.99
+  commute_distance: 9.99
+  total_duration: 9.99
+  total_distance: 9.99
+  trip_id: 
+
+two:
+  driver: two
+  ride: two
+  commute_duration: 9.99
+  commute_distance: 9.99
+  total_duration: 9.99
+  total_distance: 9.99
+  trip_id: 

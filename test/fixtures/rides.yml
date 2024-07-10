@@ -1,15 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  ride_id: MyString
-  start_address: MyString
+  pickup_address: MyString
   destination_address: MyString
-  ride_distance_miles: 1.5
-  ride_duration_hours: 1.5
+  ride_duration: 9.99
+  ride_distance: 9.99
+  ride_id: 
 
 two:
-  ride_id: MyString
-  start_address: MyString
+  pickup_address: MyString
   destination_address: MyString
-  ride_distance_miles: 1.5
-  ride_duration_hours: 1.5
+  ride_duration: 9.99
+  ride_distance: 9.99
+  ride_id: 
