@@ -7,11 +7,12 @@ class CreateDrivers < ActiveRecord::Migration[7.1]
     end
 
     create_table :drivers, id: false do |t|
-      t.string :driver_id, null: false, primary_key: true
-      t.string :name, limit: 255, null: false
-      t.string :home_address, limit: 255, null: false
+      t.string :id, null: false, primary_key: true
+      t.string :home_address, null: false
 
       t.timestamps
     end
+
+    add_index :drivers, :id, unique: true
   end
 end

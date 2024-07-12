@@ -12,6 +12,7 @@ COPY Gemfile /HopSkipChallenge/Gemfile
 COPY Gemfile.lock /HopSkipChallenge/Gemfile.lock
 
 # Install the gems
+RUN gem install bundler
 RUN bundle install
 
 # Copy the rest of the application code

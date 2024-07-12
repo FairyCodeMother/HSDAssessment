@@ -7,18 +7,21 @@ class CreateTrips < ActiveRecord::Migration[7.1]
     end
 
     create_table :trips, id: false do |t|
-      t.string :trip_id, null: false, primary_key: true
+      t.string :id, null: false, primary_key: true
       t.string :driver_id, null: false
       t.string :ride_id, null: false
-      t.decimal :commute_duration, precision: 10, scale: 2
-      t.decimal :commute_distance, precision: 10, scale: 2
-      t.decimal :total_duration, precision: 10, scale: 2
-      t.decimal :total_distance, precision: 10, scale: 2
+      t.decimal :commute_minutes, precision: 10, scale: 2
+      t.decimal :commute_miles, precision: 10, scale: 2
+      t.decimal :total_minutes, precision: 10, scale: 2
+      t.decimal :total_hours, precision: 10, scale: 2
+      t.decimal :total_miles, precision: 10, scale: 2
+      t.decimal :earnings, precision: 10, scale: 2
 
       t.timestamps
     end
 
-    add_foreign_key :trips, :drivers, column: :driver_id, primary_key: :driver_id
-    add_foreign_key :trips, :rides, column: :ride_id, primary_key: :ride_id
+    add_index :trips, :id, unique: true
+    add_foreign_key :trips, :drivers, column: :driver_id, primary_key: :id
+    add_foreign_key :trips, :rides, column: :ride_id, primary_key: :id
   end
 end

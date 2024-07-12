@@ -14,33 +14,37 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_10_040009) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "drivers", primary_key: "driver_id", id: :string, force: :cascade do |t|
-    t.string "name", limit: 255, null: false
-    t.string "home_address", limit: 255, null: false
+  create_table "drivers", id: :string, force: :cascade do |t|
+    t.string "home_address", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_drivers_on_id", unique: true
   end
 
-  create_table "rides", primary_key: "ride_id", id: :string, force: :cascade do |t|
-    t.string "pickup_address", limit: 255, null: false
-    t.string "destination_address", limit: 255, null: false
-    t.decimal "ride_duration", precision: 10, scale: 2, null: false
-    t.decimal "ride_distance", precision: 10, scale: 2, null: false
+  create_table "rides", id: :string, force: :cascade do |t|
+    t.string "pickup_address", null: false
+    t.string "destination_address", null: false
+    t.decimal "ride_minutes", precision: 10, scale: 2, null: false
+    t.decimal "ride_miles", precision: 10, scale: 2, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_rides_on_id", unique: true
   end
 
-  create_table "trips", primary_key: "trip_id", id: :string, force: :cascade do |t|
+  create_table "trips", id: :string, force: :cascade do |t|
     t.string "driver_id", null: false
     t.string "ride_id", null: false
-    t.decimal "commute_duration", precision: 10, scale: 2
-    t.decimal "commute_distance", precision: 10, scale: 2
-    t.decimal "total_duration", precision: 10, scale: 2
-    t.decimal "total_distance", precision: 10, scale: 2
+    t.decimal "commute_minutes", precision: 10, scale: 2
+    t.decimal "commute_miles", precision: 10, scale: 2
+    t.decimal "total_minutes", precision: 10, scale: 2
+    t.decimal "total_hours", precision: 10, scale: 2
+    t.decimal "total_miles", precision: 10, scale: 2
+    t.decimal "earnings", precision: 10, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_trips_on_id", unique: true
   end
 
-  add_foreign_key "trips", "drivers", primary_key: "driver_id"
-  add_foreign_key "trips", "rides", primary_key: "ride_id"
+  add_foreign_key "trips", "drivers"
+  add_foreign_key "trips", "rides"
 end

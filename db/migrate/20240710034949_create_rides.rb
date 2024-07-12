@@ -7,13 +7,15 @@ class CreateRides < ActiveRecord::Migration[7.1]
     end
 
     create_table :rides, id: false do |t|
-      t.string :ride_id, null: false, primary_key: true
-      t.string :pickup_address, limit: 255, null: false
-      t.string :destination_address, limit: 255, null: false
-      t.decimal :ride_duration, precision: 10, scale: 2, null: false
-      t.decimal :ride_distance, precision: 10, scale: 2, null: false
+      t.string :id, null: false, primary_key: true
+      t.string :pickup_address, null: false
+      t.string :destination_address, null: false
+      t.decimal :ride_minutes, precision: 10, scale: 2, null: false
+      t.decimal :ride_miles, precision: 10, scale: 2, null: false
 
       t.timestamps
     end
+
+    add_index :rides, :id, unique: true
   end
 end

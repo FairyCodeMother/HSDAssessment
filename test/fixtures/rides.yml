@@ -3,13 +3,13 @@
 one:
   pickup_address: MyString
   destination_address: MyString
-  ride_duration: 9.99
-  ride_distance: 9.99
-  ride_id: 
+  ride_minutes: 9.99
+  ride_miles: 9.99
+  ride_id:
 
 two:
   pickup_address: MyString
   destination_address: MyString
-  ride_duration: 9.99
-  ride_distance: 9.99
-  ride_id: 
+  ride_minutes: 9.99
+  ride_miles: 9.99
+  ride_id:
