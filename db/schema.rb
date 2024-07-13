@@ -14,13 +14,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_10_040009) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "drivers", id: :string, force: :cascade do |t|
-    t.string "home_address", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["id"], name: "index_drivers_on_id", unique: true
-  end
-
   create_table "rides", id: :string, force: :cascade do |t|
     t.string "pickup_address", null: false
     t.string "destination_address", null: false
@@ -32,7 +25,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_10_040009) do
   end
 
   create_table "trips", id: :string, force: :cascade do |t|
-    t.string "driver_id", null: false
+    t.string "user_driver_id", null: false
     t.string "ride_id", null: false
     t.decimal "commute_minutes", precision: 10, scale: 2
     t.decimal "commute_miles", precision: 10, scale: 2
@@ -45,6 +38,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_10_040009) do
     t.index ["id"], name: "index_trips_on_id", unique: true
   end
 
-  add_foreign_key "trips", "drivers"
+  create_table "user_drivers", id: :string, force: :cascade do |t|
+    t.string "home_address", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_user_drivers_on_id", unique: true
+  end
+
   add_foreign_key "trips", "rides"
+  add_foreign_key "trips", "user_drivers"
 end

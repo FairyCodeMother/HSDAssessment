@@ -7,23 +7,19 @@ class RidesController < ApplicationController
   def create
     origin = ride_params[:pickup_address]
     destination = ride_params[:destination_address]
+    puts "{GINASAURUS} ride params: #{ride_params[:pickup_address]}"
 
     gmap = GoogleMapService.new
-    ride_miles = gmap.get_route_miles(origin, destination)
-    ride_minutes = gmap.get_route_minutes(origin, destination)
-    # result = gmap.get_map_matrix(origin, destination)
-    # ride_miles = (result[:distance].to_f).round(2) # miles
-    # ride_minutes = (result[:duration].to_f).round(2) # minutes
-    puts "+++++++++++++++++++++++++++++++++++"
-    puts "[RidesController] create: #{ride_miles} mi, #{ride_minutes} min"
-    puts "+++++++++++++++++++++++++++++++++++"
+    route_info = gmap.get_route_info(origin, destination)
+    puts "{GINASAURUS} ride ride_miles: #{route_info[:minutes]}"
 
     @ride = Ride.new(
       pickup_address: origin,
       destination_address: destination,
-      ride_miles: ride_miles,
-      ride_minutes: ride_minutes
+      ride_miles: route_info[:miles],
+      ride_minutes: route_info[:minutes]
     )
+
     if @ride.save
       render json: @ride, status: :created
     else
@@ -37,7 +33,7 @@ class RidesController < ApplicationController
     head :no_content
   end
 
-  # DONE- GET /rides
+  # GET /rides
   def index
     @all_rides = Ride.all
     render json: @all_rides
@@ -59,20 +55,12 @@ class RidesController < ApplicationController
 
   private
 
-  # DONE
   def set_ride
     @ride = Ride.find_by(id: params[:id])
-    if @ride.nil?
-      render json: { error: 'Ride not found' }, status: :not_found
-    end
+    render json: { error: 'Ride not found' }, status: :not_found if @ride.nil?
   end
 
-  # ride_params = {
-  #   "pickup_address": "100 Congress Ave, Austin, TX, 78701",
-  #   "destination_address": "501 West 6th St, Austin, TX, 78701"
-  # }
   def ride_params
     params.require(:ride).permit(:pickup_address, :destination_address)
   end
-
 end

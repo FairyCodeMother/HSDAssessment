@@ -8,29 +8,37 @@ class GoogleMapService
     @api_key = api_key
   end
 
-  def get_route_miles(origin, destination)
-    miles = Google::Maps.distance(origin, destination).to_f # miles
-    puts "==== [GoogleMapService] Miles: #{miles} mi ===="
-
-    (miles.to_f).round(2)
-  rescue StandardError => e
-    handle_error(e)
-  end
-
-  def get_route_minutes(origin, destination)
-    minutes = Google::Maps.duration(origin, destination).to_f # minutes
-    puts "==== [GoogleMapService] Minutes: #{minutes} mins ===="
-
-    (minutes.to_f).round(2)
-  rescue StandardError => e
-    handle_error(e)
+  # Retrieve both route miles and duration in one call
+  def get_route_info(origin, destination)
+    puts "{GINASAURUS} route_info: origin: #{origin}"
+    {
+      miles: get_route_miles(origin, destination),
+      minutes: get_route_minutes(origin, destination)
+    }
   end
 
   private
+
+  # Fetch route miles using Google Maps API
+  def get_route_miles(origin, destination)
+    route_miles = Google::Maps.distance(origin, destination).to_f.round(2)
+    puts "{GINASAURUS} route_miles: origin: #{route_miles}"
+    route_miles
+  rescue StandardError => e
+    handle_error(e)
+  end
+
+  # Fetch route duration using Google Maps API
+  def get_route_minutes(origin, destination)
+    route_minutes = Google::Maps.duration(origin, destination).to_f.round(2)
+    puts "{GINASAURUS} route_minutes: origin: #{route_minutes}"
+    route_minutes
+  rescue StandardError => e
+    handle_error(e)
+  end
 
   def handle_error(exception)
     Rails.logger.error "\n\n[ERROR] Google Maps API error: #{exception.message}"
     { error: "API error: #{exception.message}" }
   end
-
 end

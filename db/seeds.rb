@@ -2,18 +2,20 @@
 # docker-compose run web rails db:seed
 
 # Clear existing data
-Driver.destroy_all
+UserDriver.destroy_all
 Ride.destroy_all
 
 # Seed Drivers: IDs auto generated
-drivers = [
+user_drivers = [
   { home_address: '100 Congress Ave, Austin, TX' },
   { home_address: '501 West 6th St, Austin, TX' },
   { home_address: '1201 S Lamar Blvd, Austin, TX' },
   { home_address: '2200 S IH 35 Frontage Rd, Austin, TX' },
   { home_address: '2120 Guadalupe St, Austin, TX' },
 ]
-drivers.each { |driver| Driver.create!(driver) }
+user_drivers.each do |user_driver|
+  UserDriver.create!(user_driver)
+end
 
 # Seed Rides: IDs auto generated, distances/durations calculated dynamically
 rides = [
@@ -29,17 +31,13 @@ rides.each do |ride_data|
   origin = ride_data[:pickup_address]
   destination = ride_data[:destination_address]
 
-  # result = @gmap.get_map_matrix(origin, destination)
-  # ride_miles = @gmap.get_route_miles # result[:distance].to_f # miles
-  # ride_minutes = @@gmap.get_route_minutes # result[:duration].to_f # minutes
-  ride_miles = @gmap_service.get_route_miles(origin, destination)
-  ride_minutes = @gmap_service.get_route_minutes(origin, destination)
+  route_info = @gmap_service.get_route_info(origin, destination)
 
   ride_params = {
     pickup_address: origin,
     destination_address: destination,
-    ride_minutes: ride_minutes,
-    ride_miles: ride_miles
+    ride_minutes: route_info[:minutes],
+    ride_miles: route_info[:miles]
   }
   Ride.create!(ride_params)
 end

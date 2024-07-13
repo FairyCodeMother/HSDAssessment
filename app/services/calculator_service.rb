@@ -1,71 +1,48 @@
 # app/services/calculator_service.rb
 class CalculatorService
 
-  def initialize(driver, ride)
+  def initialize(user_driver, ride)
+    @user_driver = user_driver
+    @ride = ride
     @gmap = GoogleMapService.new
-    @d_home_address = driver.home_address
-    @r_pickup_address = ride.pickup_address
-    @r_destination_address = ride.destination_address
-    @r_miles = ride.ride_miles.to_f
-    @r_minutes = ride.ride_minutes
-    puts "[CalculatorSvc] initialize- ride: #{@r_miles} mi, #{@r_minutes} min"
   end
 
-  # Amount Driver earns if they choose the Ride: base + distance_earnings + duration_earnings
+  # Calculate earnings based on distance and duration of the Ride: base + distance_earnings + duration_earnings
   # $12 + ($1.50 * (ride distance - 5 miles)) + ($0.70 * (ride duration - 15 min))
-  def calculate_earnings
+  def calculate_earnings(totals_result)
     base = 12.00
 
-    puts "::::::: #{@t_miles} mi ::::::: #{@t_minutes} min :::::::::"
-    puts ":::::::::::::::::::::::::::::::::::::"
+    earn_miles = (totals_result[:total_miles] - 5).round(2)
+    earn_minutes = (totals_result[:total_minutes] - 15).round(2)
 
-    earn_miles = (@t_miles - 5).round(2)
-    per_mile = 1.5
-    distance_earnings = earn_miles * per_mile
-    puts "[CalculatorSvc] earnings- earn_miles: #{earn_miles} mi * #{per_mile} = $#{(earn_miles * per_mile).round(2) } distance."
-
-    earn_minutes = (@t_minutes - 15).round(2)
-    per_min = 0.70
-    duration_earnings = earn_minutes * per_min
-    puts "[CalculatorSvc] earnings- earn_minutes: #{earn_minutes} min * #{per_min} = $#{earn_minutes * per_min } duration."
+    distance_earnings = earn_miles * 1.5
+    duration_earnings = earn_minutes * 0.70
 
     earnings = base + distance_earnings + duration_earnings
-
-    puts "[CalculatorSvc] earnings- earnings: $#{earnings} totals."
-    earnings
+    earnings.round(2)
   end
 
-  # From Driver's home to Ride Destination
+  # From Driver's home to Ride Pickup to Ride Destination
   def calculate_totals(commute_result)
-    @c_miles = commute_result[:commute_miles]
-    @c_minutes = commute_result[:commute_minutes]
+    total_miles = (@ride.ride_miles + commute_result[:commute_miles]).round(2)
+    total_minutes = (@ride.ride_minutes + commute_result[:commute_minutes]).round(2)
+    total_hours = total_minutes / 60.0
 
-    @t_miles = (@c_miles + @r_miles).round(2)
-    @t_minutes = (@c_minutes + @r_minutes).round(2)
-
-    puts "------------------------------------------------"
-    puts "[CalculatorSvc] calculate_totals: #{@t_miles} mi, #{@t_minutes} min: CORRECT"
-    puts "------------------------------------------------"
-
-    totals = {
-      total_miles: @t_miles.to_f,
-      total_minutes: @t_minutes.to_f,
-      total_hours: @t_minutes.to_f/60
+    {
+      total_miles: total_miles,
+      total_minutes: total_minutes,
+      total_hours: total_hours
     }
   end
 
   # Driver's home to Ride's pickup
   def calculate_commute
-    # commute = @gmap.get_miles_matrix(@d_home_address, @r_pickup_address)
-    c_miles = @gmap.get_route_miles(@d_home_address, @r_pickup_address) # commute[:distance] # miles
-    c_minutes = @gmap.get_route_minutes(@d_home_address, @r_pickup_address) # commute[:duration] # min
-
-    puts "[CalculatorSvc] calculate_commute- commute: #{c_miles} mi, #{c_minutes} min"
-
-    commute = {
-      commute_miles: c_miles,
-      commute_minutes: c_minutes,
-      commute_hours: @t_minutes.to_f/60
+    commute_route = @gmap.get_route_info(@user_driver.home_address, @ride.pickup_address)
+    commute_hours = commute_route[:minutes] / 60.0
+    {
+      commute_miles: commute_route[:miles],
+      commute_minutes: commute_route[:minutes],
+      commute_hours: commute_hours
     }
   end
 

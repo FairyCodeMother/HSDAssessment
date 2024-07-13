@@ -1,20 +1,20 @@
 # config/routes.rb
 Rails.application.routes.draw do
-  
-  resources :rides, only: [:index, :show, :create, :update, :destroy] do
-    post 'calculate_score_and_render', on: :collection
-  end
-  
+
+  # Rides endpoints
+  resources :rides, only: [:index, :show, :create, :update, :destroy]
+
+  # Trips endpoints
   resources :trips
 
-  # GET Trips by driver_id (/drivers/:id/trips)
-  resources :drivers do
-    get 'trips', to: 'drivers#get_trips_by_driver_id', on: :member
+  # GET Trips by user_driver_id (/user_drivers/:id/trips)
+  resources :user_drivers, only: [] do
+    get 'trips', to: 'user_drivers#get_trips_by_user_driver_id', on: :member
   end
-  
-  # Health check route: returns 200 if app boots with no exceptions (otherwise 500)
+
+  # Health check route
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Defines the root path route ("/")
+  # Root path route
   root "posts#index"
 end

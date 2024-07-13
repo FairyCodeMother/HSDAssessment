@@ -8,11 +8,12 @@ class Ride < ApplicationRecord
 
   self.primary_key = 'id'
 
-  # Callbacks
+  # Set Ride ID before creation if blank
   before_create :set_ride_id
 
   private
 
+  # Custom key starts with "r"
   def set_ride_id
     self.id = "r#{SecureRandom.uuid}" if id.blank?
   end
