@@ -1,7 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  user_driver: one
+  chauffeur: one
   ride: one
   commute_minutes: 9.99
   commute_miles: 9.99
@@ -10,7 +10,7 @@ one:
   trip_id:
 
 two:
-  user_driver: two
+  chauffeur: two
   ride: two
   commute_minutes: 9.99
   commute_miles: 9.99

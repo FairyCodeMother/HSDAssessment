@@ -5,11 +5,11 @@ Rails.application.routes.draw do
   resources :rides, only: [:index, :show, :create, :update, :destroy]
 
   # Trips endpoints
-  resources :trips
+  resources :trips, only: [:index, :show, :create, :update, :destroy]
 
-  # GET Trips by user_driver_id (/user_drivers/:id/trips)
-  resources :user_drivers, only: [] do
-    get 'trips', to: 'user_drivers#get_trips_by_user_driver_id', on: :member
+  # GET Trips by chauffeur_id (/chauffeurs/:id/trips)
+  resources :chauffeurs, only: [] do
+    get 'trips', to: 'chauffeurs#create_trips_by_chauffeur_id', on: :member
   end
 
   # Health check route

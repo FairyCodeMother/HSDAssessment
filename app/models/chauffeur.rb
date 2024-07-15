@@ -1,15 +1,15 @@
-# app/models/user_driver.rb
+# app/models/chauffeur.rb
 
-# A UserDriver consists of a name and home_address
-class UserDriver < ApplicationRecord
+# A Chauffeur consists of a name and home_address
+class Chauffeur < ApplicationRecord
   has_many :trips
 
   validates :home_address, presence: true
 
   self.primary_key = 'id'
 
-  # Get all Rides for this UserDriver
-  def get_all_user_driver_rides
+  # Get all Rides for this Chauffeur
+  def get_all_chauffeur_rides
     # Example filtering logic (adjust as per your actual business rules)
     # Fetching all Rides (from seeds) for now
     Ride.all
@@ -17,13 +17,13 @@ class UserDriver < ApplicationRecord
     render json: { error: 'Rides not found' }, status: :not_found
   end
 
-  # Set UserDriver ID before creation if blank
-  before_create :set_user_driver_id
+  # Set Chauffeur ID before creation if blank
+  before_create :set_chauffeur_id
 
   private
 
   # Custom key starts with "u"
-  def set_user_driver_id
+  def set_chauffeur_id
     self.id = "u#{SecureRandom.uuid}" if id.blank?
   end
 end

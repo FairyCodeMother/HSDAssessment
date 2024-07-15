@@ -2,44 +2,64 @@
 # docker-compose run web rails db:seed
 
 # Clear existing data
-UserDriver.destroy_all
+Chauffeur.destroy_all
 Ride.destroy_all
+Trip.destroy_all
 
-# Seed Drivers: IDs auto generated
-user_drivers = [
-  { home_address: '100 Congress Ave, Austin, TX' },
+# Seed Chauffeurs: IDs are auto generated
+chauffeurs = [
   { home_address: '501 West 6th St, Austin, TX' },
   { home_address: '1201 S Lamar Blvd, Austin, TX' },
+  { home_address: '11711 Argonne Forest Trail, Austin, TX' },
   { home_address: '2200 S IH 35 Frontage Rd, Austin, TX' },
-  { home_address: '2120 Guadalupe St, Austin, TX' },
+  { home_address: '5801 Burnet Rd, Austin, TX' },
 ]
-user_drivers.each do |user_driver|
-  UserDriver.create!(user_driver)
+chauffeurs.each do |chauffeur|
+  new_chauffeur = Chauffeur.create!(chauffeur)
+  puts "[GINASAURUS] SEED Chauffeur: #{new_chauffeur.id} ID."
+
 end
 
-# Seed Rides: IDs auto generated, distances/durations calculated dynamically
+# Seed Rides: IDs are auto generated, distances/durations/earnings are calculated dynamically
 rides = [
-  { pickup_address: '2401 E 6th St, Austin, TX', destination_address: '11711 Argonne Forst Trail, Austin, TX' },
-  { pickup_address: '4700 West Guadalupe, Austin, TX', destination_address: '3600 Presidential Blvd, Austin, TX'},
-  { pickup_address: '4000 S IH 35 Frontage Rd, Austin, TX', destination_address: '3107 E 14th 1/2 St, Austin, TX' },
-  { pickup_address: '2325 San Antonio St, Austin, TX', destination_address: '2001 E Cesar Chavez St, Austin, TX' }
+  { pickup_address: '2401 E 6th St, Austin, TX', dropoff_address: '11706 Argonne Forst Trail, Austin, TX' },
+  { pickup_address: '4700 West Guadalupe, Austin, TX', dropoff_address: '3600 Presidential Blvd, Austin, TX'},
+  { pickup_address: '156 W Cesar Chavez St, Austin, TX', dropoff_address: '3107 E 14th 1/2 St, Austin, TX' },
+  { pickup_address: '2325 San Antonio St, Austin, TX', dropoff_address: '4000 S IH 35 Frontage Rd, Austin, TX' }
 ]
 
-@gmap_service = GoogleMapService.new
+calculator = CalculatorService.new
 
 rides.each do |ride_data|
-  origin = ride_data[:pickup_address]
-  destination = ride_data[:destination_address]
+  pickup_address = ride_data[:pickup_address]
+  dropoff_address = ride_data[:dropoff_address]
 
-  route_info = @gmap_service.get_route_info(origin, destination)
+  # Calculate route metrics
+  route_info = calculator.calculate_route_metrics(pickup_address, dropoff_address)
+
+  # Calculate earnings
+  ride_earnings = calculator.calculate_earnings(route_info[:miles], route_info[:minutes])
+
+  puts "[GINASAURUS] SEED Ride: #{route_info[:miles]} miles, #{route_info[:minutes]} minutes, earnings: $ #{ride_earnings}."
 
   ride_params = {
-    pickup_address: origin,
-    destination_address: destination,
+    pickup_address: pickup_address,
+    dropoff_address: dropoff_address,
+    ride_miles: route_info[:miles],
     ride_minutes: route_info[:minutes],
-    ride_miles: route_info[:miles]
+    ride_earnings: ride_earnings
   }
+
   Ride.create!(ride_params)
 end
 
-puts "Seed data created successfully!"
+# Seed a single Trip with a random Chauffeur and Ride
+random_chauffeur = Chauffeur.order('RANDOM()').first
+random_ride = Ride.order('RANDOM()').first
+
+# Create the Trip
+trip = Trip.create_trip_by_ids(random_chauffeur.id, random_ride.id)
+
+puts "[GINASAURUS] SEED Trip: chauffeur_id: #{trip.chauffeur_id}, ride_id: #{trip.ride_id}, score: #{trip.score}."
+
+puts "All seed data created!"

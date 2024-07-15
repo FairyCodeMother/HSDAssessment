@@ -5,20 +5,38 @@ class RidesController < ApplicationController
 
   # POST /rides
   def create
-    origin = ride_params[:pickup_address]
-    destination = ride_params[:destination_address]
-    puts "{GINASAURUS} ride params: #{ride_params[:pickup_address]}"
+    # Setup
+    calculator = CalculatorService.new
+    pickup = ride_params[:pickup_address]
+    dropoff = ride_params[:dropoff_address]
+    puts "[GINASAURUS] New Ride: pickup_address: #{pickup}, dropoff_address: #{dropoff}"
 
-    gmap = GoogleMapService.new
-    route_info = gmap.get_route_info(origin, destination)
-    puts "{GINASAURUS} ride ride_miles: #{route_info[:minutes]}"
+    # Ride pickup to dropoff locations
+    route_info = calculator.calculate_route_metrics(pickup, dropoff)
+    ride_miles = route_info[:miles]
+    ride_minutes = route_info[:minutes]
+    puts "[GINASAURUS] New Ride: ride_miles: #{ride_miles}, ride_minutes: #{ride_minutes}"
+
+    # $12 + ($1.50 * (ride distance - 5 miles)) + ($0.70 * (ride duration - 15 min))
+    ride_earnings = calculator.calculate_earnings(
+      route_info[:miles],
+      route_info[:minutes]
+    )
+    puts "[GINASAURUS] New Ride: ride_earnings: #{ride_earnings}"
 
     @ride = Ride.new(
-      pickup_address: origin,
-      destination_address: destination,
-      ride_miles: route_info[:miles],
-      ride_minutes: route_info[:minutes]
+      pickup_address: pickup,
+      dropoff_address: dropoff,
+      ride_miles: ride_miles,
+      ride_minutes: ride_minutes,
+      ride_earnings: ride_earnings
     )
+    puts "[GINASAURUS] New Ride:"
+    puts "    pickup_address: #{pickup_address}"
+    puts "    dropoff_address: #{dropoff_address}"
+    puts "    ride_miles: #{ride_miles}, ride_minutes: #{ride_minutes}"
+    puts "    ride_earnings: #{ride_earnings}"
+    puts " ====================  "
 
     if @ride.save
       render json: @ride, status: :created
@@ -27,16 +45,16 @@ class RidesController < ApplicationController
     end
   end
 
-  # DELETE /rides/:id
-  def destroy
-    @ride.destroy
-    head :no_content
-  end
-
   # GET /rides
   def index
     @all_rides = Ride.all
     render json: @all_rides
+  end
+
+  # DELETE /rides/:id
+  def destroy
+    @ride.destroy
+    head :no_content
   end
 
   # GET /rides/:id
@@ -61,6 +79,6 @@ class RidesController < ApplicationController
   end
 
   def ride_params
-    params.require(:ride).permit(:pickup_address, :destination_address)
+    params.require(:ride).permit(:pickup_address, :dropoff_address)
   end
 end
