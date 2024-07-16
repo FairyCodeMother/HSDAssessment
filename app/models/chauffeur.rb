@@ -22,8 +22,8 @@ class Chauffeur < ApplicationRecord
 
   private
 
-  # Custom key starts with "u"
+  # Custom key starts with "c"
   def set_chauffeur_id
-    self.id = "u#{SecureRandom.uuid}" if id.blank?
+    self.id = "c#{SecureRandom.uuid}" if id.blank?
   end
 end

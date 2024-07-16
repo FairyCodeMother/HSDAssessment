@@ -39,7 +39,6 @@ class ChauffeursController < ApplicationController
   end
 
   # Returns a paginated JSON list of rides in descending score order for a given Chauffeur
-  # Calculate the score of a Trip (ride in $ per hour as: (ride earnings) / (commute duration + ride duration))
   # GET /chauffeurs/:id/trips
   def create_trips_by_chauffeur_id
     # Placeholder for fetching a random Chauffeur
@@ -61,6 +60,7 @@ class ChauffeursController < ApplicationController
     end
 
     # Sort the Rides desc: Higher is better!
+    # Score = (ride in $ per hour as: (ride earnings) / (commute duration + ride duration))
     sorted_trips = trip_list.sort_by(&:score).reverse
 
     # Pagination
