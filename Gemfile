@@ -41,8 +41,8 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+# Google Maps Web Service API: for Distance Matrix
 gem 'google-maps' # 3.0.7
-
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
@@ -50,9 +50,6 @@ gem 'google-maps' # 3.0.7
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
-  gem 'rspec-rails', '6.1.1'
-  gem 'factory_bot_rails'
-  gem 'faker'
 end
 
 group :development do
@@ -64,15 +61,16 @@ group :development do
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   gem "spring"
+
+  # GINASAURUS ADDITIONS
+  gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "faker"
 end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem 'database_cleaner-active_record'
-  gem 'shoulda-matchers', '~> 5.0'
-  gem "capybara", '3.40.0'  # Adds support for Capybara system testing and selenium driver
-  gem "selenium-webdriver", '4.10'
-  # Easy installation and use of chromedriver to run system tests with Chrome
-  gem 'webdrivers', '5.3.0'
-
-  end
+  gem "capybara"
+  gem "selenium-webdriver"
+end
