@@ -50,7 +50,7 @@ gem 'google-maps' # 3.0.7
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
-  gem 'rspec-rails', '~> 5.0'
+  gem 'rspec-rails', '6.1.1'
   gem 'factory_bot_rails'
   gem 'faker'
 end
@@ -70,6 +70,9 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem 'database_cleaner-active_record'
   gem 'shoulda-matchers', '~> 5.0'
-  gem "capybara"
-  gem "selenium-webdriver"
-end
+  gem "capybara", '3.40.0'  # Adds support for Capybara system testing and selenium driver
+  gem "selenium-webdriver", '4.10'
+  # Easy installation and use of chromedriver to run system tests with Chrome
+  gem 'webdrivers', '5.3.0'
+
+  end
