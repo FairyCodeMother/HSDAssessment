@@ -16,11 +16,6 @@ require_relative 'support/chrome'
 require 'factory_bot_rails'
 require 'database_cleaner/active_record'
 
-
-
-
-
-
 # ActiveRecord: Checks for pending migrations and applies them before tests are run.
 begin
   ActiveRecord::Migration.maintain_test_schema!
@@ -28,10 +23,13 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 
-RSpec.configure do |config|
 
-  # GINASAURUS ---------------------------------
-  # docker-compose exec web rspec
+
+
+
+# GINASAURUS ---------------------------------
+# docker-compose exec web rspec
+RSpec.configure do |config|
 
   # FactoryBot
   config.include FactoryBot::Syntax::Methods  # Include FactoryBot methods
@@ -59,8 +57,19 @@ RSpec.configure do |config|
 
   config.after(:each) do
     DatabaseCleaner.clean
+  rescue => e
+    puts "Error cleaning up the database: #{e.message}"
   end
 
+  # Shoulda Matchers configuration
+  Shoulda::Matchers.configure do |config|
+    config.integrate do |with|
+      with.test_framework :rspec
+      with.library :rails
+    end
+  end
+
+  # ActiveRecord/ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.use_transactional_fixtures = true
   config.infer_spec_type_from_file_location!

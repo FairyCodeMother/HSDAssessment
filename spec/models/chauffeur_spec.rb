@@ -1,28 +1,24 @@
 # spec/models/chauffeur_spec.rb
-# GINASAURUS: docker-compose run web rspec
-
 require 'rails_helper'
 
 RSpec.describe Chauffeur, type: :model do
-
-
   describe 'factories' do
     it 'creates chauffeurs from the array' do
-      create(:chauffeur, :from_array)
-      expect(Chauffeur.count).to eq(5)
+      create(:chauffeur, :from_array) # This will create the initial chauffeur and the ones from the array
+      expect(Chauffeur.count).to eq(5) # 1 initial + 4 from array
     end
   end
 
-  # describe 'validations' do
-  #   it { should validate_presence_of(:home_address) }
-  # end
+  describe 'validations' do
+    it { should validate_presence_of(:home_address) }
+  end
 
-  # describe 'callbacks' do
-  #   it 'sets chauffeur id before creation if blank' do
-  #     chauffeur = build(:chauffeur, id: nil)
-  #     expect { chauffeur.save }.to change { chauffeur.id }.from(nil).to(be_a(String).and start_with('c'))
-  #   end
-  # end
+  describe 'callbacks' do
+    it 'sets chauffeur id before creation if blank' do
+      chauffeur = build(:chauffeur, id: nil)
+      expect { chauffeur.save }.to change { chauffeur.id }.from(nil).to(be_a(String).and start_with('c'))
+    end
+  end
 
   # Chauffeur CAN have many Trips
   # describe 'associations' do
