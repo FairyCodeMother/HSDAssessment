@@ -53,6 +53,10 @@ group :development, :test do
   gem 'rspec-rails', '~> 5.0'
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'database_cleaner-active_record'
+  gem 'shoulda-matchers', '~> 5.0'
+  gem "capybara"
+  gem "selenium-webdriver"
 end
 
 group :development do
@@ -66,10 +70,10 @@ group :development do
   gem "spring"
 end
 
-group :test do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem 'database_cleaner-active_record'
-  gem 'shoulda-matchers', '~> 5.0'
-  gem "capybara"
-  gem "selenium-webdriver"
-end
+# group :test do
+#   Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+#   gem 'database_cleaner-active_record'
+#   gem 'shoulda-matchers', '~> 5.0'
+#   gem "capybara"
+#   gem "selenium-webdriver"
+# end
