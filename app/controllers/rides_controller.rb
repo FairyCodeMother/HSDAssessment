@@ -17,16 +17,12 @@ class RidesController < ApplicationController
     end
 
     # Ride pickup to dropoff locations
-    route_info = calculator.calculate_route_metrics(pickup, dropoff)
-    ride_miles = route_info[:miles]
-    ride_minutes = route_info[:minutes]
-    # puts "[GINASAURUS] New Ride: ride_miles: #{ride_miles}, ride_minutes: #{ride_minutes}"
+    ride_info = calculator.calculate_route_metrics(pickup, dropoff)
+    ride_miles = ride_info[:miles]
+    ride_minutes = ride_info[:minutes]
 
-    # $12 + ($1.50 * (ride distance - 5 miles)) + ($0.70 * (ride duration - 15 min))
-    ride_earnings = calculator.calculate_earnings(
-      route_info[:miles],
-      route_info[:minutes]
-    )
+    # $12 + ($1.50 * (ride_miles - 5mi)) + ($0.70 * (ride_minutes - 15min))
+    ride_earnings = calculator.calculate_earnings(ride_miles, ride_minutes)
 
     @ride = Ride.new(
       pickup_address: pickup,
@@ -35,6 +31,7 @@ class RidesController < ApplicationController
       ride_minutes: ride_minutes,
       ride_earnings: ride_earnings
     )
+    # puts "GINASAURUS RidesController: New Ride: #{@ride.ride_miles} mi, #{@ride.ride_minutes} min"
 
     if @ride.save
       render json: @ride, status: :created

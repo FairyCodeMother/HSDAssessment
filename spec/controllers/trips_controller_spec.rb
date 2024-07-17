@@ -68,8 +68,8 @@ RSpec.describe TripsController, type: :controller do
 
       # Debugging: Check response and any error messages
       if response.status != 200
-        puts "DEBUG: Response status: #{response.status}"
-        puts "DEBUG: Response body: #{response.body}"
+        puts "GINASAURUS TRIPS CON DEBUG: Response status: #{response.status}"
+        puts "GINASAURUS TRIPS CON DEBUG: Response body: #{response.body}"
       end
 
       # Ensure the response status is correct (HTTP Status 201: Created)
