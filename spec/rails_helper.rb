@@ -69,6 +69,11 @@ RSpec.configure do |config|
     end
   end
 
+  # Setup for stubbing
+  config.mock_with :rspec do |mocks|
+    mocks.verify_partial_doubles = true
+  end
+
   # ActiveRecord/ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.use_transactional_fixtures = true

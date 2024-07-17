@@ -5,7 +5,7 @@ RSpec.describe Chauffeur, type: :model do
   describe 'factories' do
     it 'creates chauffeurs from the array' do
       create(:chauffeur, :from_array) # This will create the initial chauffeur and the ones from the array
-      expect(Chauffeur.count).to eq(5) # 1 initial + 4 from array
+      expect(Chauffeur.count).to eq(5) # 1 initial + 4 array
     end
   end
 
@@ -20,25 +20,25 @@ RSpec.describe Chauffeur, type: :model do
     end
   end
 
+  describe 'custom methods' do
+    let(:chauffeur) { create(:chauffeur) }
+
+    describe '#get_all_chauffeur_rides' do
+      it 'returns all rides' do
+        # Create rides for testing
+        create_list(:ride, 3)
+        expect(chauffeur.get_all_chauffeur_rides.count).to eq(3)
+      end
+
+      it 'raises an error if rides are not found' do
+        expect { chauffeur.get_all_chauffeur_rides }.not_to raise_error
+      end
+    end
+  end
+
   # Chauffeur CAN have many Trips
   # describe 'associations' do
   #   it { should have_many(:trips) }
-  # end
-
-  # describe 'custom methods' do
-  #   let(:chauffeur) { create(:chauffeur) }
-
-  #   describe '#get_all_chauffeur_rides' do
-  #     it 'returns all rides' do
-  #       # Create rides for testing
-  #       create_list(:ride, 3)
-  #       expect(chauffeur.get_all_chauffeur_rides.count).to eq(3)
-  #     end
-
-  #     it 'raises an error if rides are not found' do
-  #       expect { chauffeur.get_all_chauffeur_rides }.not_to raise_error
-  #     end
-  #   end
   # end
 
 

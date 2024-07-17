@@ -1,45 +1,69 @@
 # spec/factories.rb
 require 'factory_bot'
+require 'faker'
 
 FactoryBot.define do
-  # Define a list of chauffeurs
+
+  # Define list of chauffeurs
   chauffeurs_array = [
     { home_address: '1201 S Lamar Blvd, Austin, TX' },
     { home_address: '11711 Argonne Forest Trail, Austin, TX' },
     { home_address: '2200 S IH 35 Frontage Rd, Austin, TX' },
     { home_address: '5801 Burnet Rd, Austin, TX' },
   ]
-
   factory :chauffeur do
+    # Default attributes
     sequence(:id) { |n| "c#{SecureRandom.uuid}" }
-
-    # Set a default to start with
     home_address { "501 West 6th St, Austin, TX" }
 
-    # Create chauffeurs from the array
+    # Create Chauffeurs from list
     trait :from_array do
-      transient do
-        chauffeurs { chauffeurs_array }
-      end
+      transient { chauffeurs { chauffeurs_array } }
 
       after(:create) do |chauffeur, evaluator|
         evaluator.chauffeurs.each do |chauffeur_attributes|
           create(:chauffeur, chauffeur_attributes)
         end
       end
+
     end
   end
 
+  # Define list of rides
+  rides_array = [
+    { pickup_address: '4700 West Guadalupe, Austin, TX', dropoff_address: '3600 Presidential Blvd, Austin, TX'},
+    { pickup_address: '156 W Cesar Chavez St, Austin, TX', dropoff_address: '3107 E 14th 1/2 St, Austin, TX' },
+    { pickup_address: '2325 San Antonio St, Austin, TX', dropoff_address: '4000 S IH 35 Frontage Rd, Austin, TX' }
+  ]
+  factory :ride do
+    sequence(:id) { |n| "r#{SecureRandom.uuid}" }
+    pickup_address { '2401 E 6th St, Austin, TX' }
+    dropoff_address { '11706 Argonne Forst Trail, Austin, TX' }
+    ride_minutes { Faker::Number.decimal(l_digits: 1, r_digits: 2).to_f } # Placeholder
+    ride_miles { Faker::Number.decimal(l_digits: 1, r_digits: 2).to_f }   # Placeholder
+    ride_earnings { Faker::Number.decimal(l_digits: 2, r_digits: 2).to_f }
 
-  # rides = [
-  #   { pickup_address: '2401 E 6th St, Austin, TX', dropoff_address: '11706 Argonne Forst Trail, Austin, TX' },
-  #   { pickup_address: '4700 West Guadalupe, Austin, TX', dropoff_address: '3600 Presidential Blvd, Austin, TX'},
-  #   { pickup_address: '156 W Cesar Chavez St, Austin, TX', dropoff_address: '3107 E 14th 1/2 St, Austin, TX' },
-  #   { pickup_address: '2325 San Antonio St, Austin, TX', dropoff_address: '4000 S IH 35 Frontage Rd, Austin, TX' }
-  # ]
-  # factory :ride do
-  #   pickup_address { "2401 E 6th St, Austin, TX" }
-  #   dropoff_address { "11706 Argonne Forest Trail, Austin, TX" }
-  # end
+    trait :from_array do
+      transient { rides { rides_array } }
 
+      after(:create) do |ride, evaluator|
+        evaluator.rides.each do |ride_attributes|
+          pickup = ride_attributes[:pickup_address]
+          dropoff = ride_attributes[:dropoff_address]
+
+          calculator = CalculatorService.new
+          route_metrics = calculator.calculate_route_metrics(pickup, dropoff)
+          ride_earnings = calculator.calculate_earnings(route_metrics[:miles], route_metrics[:minutes])
+
+          ride.update(
+            pickup_address: pickup,
+            dropoff_address: dropoff,
+            ride_minutes: route_metrics[:minutes],
+            ride_miles: route_metrics[:miles],
+            ride_earnings: ride_earnings
+          )
+        end
+      end
+    end
+  end
 end
