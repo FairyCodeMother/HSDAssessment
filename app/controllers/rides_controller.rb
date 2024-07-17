@@ -9,20 +9,20 @@ class RidesController < ApplicationController
     calculator = CalculatorService.new
     pickup = ride_params[:pickup_address]
     dropoff = ride_params[:dropoff_address]
-    puts "[GINASAURUS] New Ride: pickup_address: #{pickup}, dropoff_address: #{dropoff}"
+    # puts "[GINASAURUS] New Ride: pickup_address: #{pickup}, dropoff_address: #{dropoff}"
 
     # Ride pickup to dropoff locations
     route_info = calculator.calculate_route_metrics(pickup, dropoff)
     ride_miles = route_info[:miles]
     ride_minutes = route_info[:minutes]
-    puts "[GINASAURUS] New Ride: ride_miles: #{ride_miles}, ride_minutes: #{ride_minutes}"
+    # puts "[GINASAURUS] New Ride: ride_miles: #{ride_miles}, ride_minutes: #{ride_minutes}"
 
     # $12 + ($1.50 * (ride distance - 5 miles)) + ($0.70 * (ride duration - 15 min))
     ride_earnings = calculator.calculate_earnings(
       route_info[:miles],
       route_info[:minutes]
     )
-    puts "[GINASAURUS] New Ride: ride_earnings: #{ride_earnings}"
+    # puts "[GINASAURUS] New Ride: ride_earnings: #{ride_earnings}"
 
     @ride = Ride.new(
       pickup_address: pickup,
@@ -31,14 +31,14 @@ class RidesController < ApplicationController
       ride_minutes: ride_minutes,
       ride_earnings: ride_earnings
     )
-    puts "[GINASAURUS] New Ride:"
-    puts "    pickup_address: #{pickup_address}"
-    puts "    dropoff_address: #{dropoff_address}"
-    puts "    ride_miles: #{ride_miles}, ride_minutes: #{ride_minutes}"
-    puts "    ride_earnings: #{ride_earnings}"
-    puts " ====================  "
 
     if @ride.save
+      # puts "[GINASAURUS] New Ride:"
+      # puts "    pickup_address: #{pickup_address}"
+      # puts "    dropoff_address: #{dropoff_address}"
+      # puts "    ride_miles: #{ride_miles}, ride_minutes: #{ride_minutes}"
+      # puts "    ride_earnings: #{ride_earnings}"
+      # puts " ====================  "
       render json: @ride, status: :created
     else
       render json: @ride.errors, status: :unprocessable_entity

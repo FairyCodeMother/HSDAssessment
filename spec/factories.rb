@@ -77,4 +77,16 @@ FactoryBot.define do
       end
     end
   end
+
+  factory :trip do
+    sequence(:id) { |n| "t#{SecureRandom.uuid}" }
+
+    # Use association to create chauffeur with specific home_address
+    association :chauffeur, factory: [:chauffeur, home_address: '1201 S Lamar Blvd, Austin, TX']
+
+    # Use association to create ride with specific pickup_address and dropoff_address
+    association :ride, factory: [:ride, pickup_address: '2401 E 6th St, Austin, TX', dropoff_address: '11706 Argonne Forst Trail, Austin, TX']
+  end
+
+
 end

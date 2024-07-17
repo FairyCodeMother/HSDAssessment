@@ -11,13 +11,13 @@ RSpec.describe Ride, type: :model do
       # Retrieve all rides
       rides = Ride.all
       rides.each_with_index do |ride, index|
-        puts "Ride #{index + 1}:"
+        puts "RIDE Ride #{index + 1}:"
         puts "Pickup Address: #{ride.pickup_address}"
-        puts "------------------"
+        puts "======================\n"
       end
 
-      expect(rides.first.pickup_address).to eq('2401 E 6th St, Austin, TX')
-      expect(rides.last.dropoff_address).to eq('4000 S IH 35 Frontage Rd, Austin, TX')
+      expect(rides.first.pickup_address).to eq('4700 West Guadalupe, Austin, TX')
+      expect(rides.last.dropoff_address).to eq('11706 Argonne Forst Trail, Austin, TX')
     end
   end
 

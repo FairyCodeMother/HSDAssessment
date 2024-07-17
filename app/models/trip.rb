@@ -21,15 +21,11 @@ class Trip < ApplicationRecord
     ride = Ride.find(ride_id)
     ride_earnings = ride.ride_earnings
 
-    puts "[GINASAURUS] TRIP: chauffeur_id: #{chauffeur.id}, ride_id: #{ride.id}, ride_earnings: #{ride_earnings}."
-
     # Calculate commute: Chauffeur's home_address to Ride's pickup_address
     commute = calculate_trip_commute(chauffeur.home_address, ride.pickup_address)
-    puts "[GINASAURUS] TRIP: commute: #{commute[:minutes]} mins, #{commute[:miles]} mi."
 
     # Calculate totals: Chauffeur's home_address to Ride's pickup_address to Ride's dropoff_address
     totals = calculate_trip_totals(commute, ride)
-    puts "[GINASAURUS] TRIP: totals: #{totals[:total_minutes]} mins, #{totals[:total_miles]} mi."
 
     # Calculate score
     score = calculate_trip_score(ride.ride_earnings, totals[:total_miles])
@@ -46,14 +42,6 @@ class Trip < ApplicationRecord
       earnings: ride.ride_earnings,
       score: score
     )
-    puts "[GINASAURUS] TRIP New Trip:"
-    puts "    chauffeur_id: #{@trip.chauffeur_id}, ride_id: #{@trip.ride_id}"
-    puts "    commute: #{@trip.commute_miles} mi, #{@trip.commute_minutes} mins"
-    puts "    total: #{@trip.total_miles} mi, #{@trip.total_minutes} hrs, #{@trip.total_hours} mins"
-    puts "    earnings: #{@trip.earnings}, score: #{@trip.score}"
-    puts " ====================  "
-
-    @trip
   end
 
   private
