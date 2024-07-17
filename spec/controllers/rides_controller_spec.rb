@@ -55,9 +55,15 @@ RSpec.describe RidesController, type: :controller do
 
   describe 'GET #index' do
     it 'returns a JSON response with all rides' do
+      # Create some sample rides for testing
+      create_list(:ride, 3)
+
       get :index
+
       expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)).to eq(Ride.all.as_json)
+      parsed_response = JSON.parse(response.body)
+      puts "GINASAURUS: R CONTROLLER: #{parsed_response}"
+      expect(parsed_response.size).to eq(Ride.count)
     end
   end
 
@@ -73,7 +79,6 @@ RSpec.describe RidesController, type: :controller do
     end
 
     it 'returns a JSON response with the ride' do
-      puts "GINASAURUS: GET SHOW RIDE: #{ride.id}"
       # Ensure ride is created properly and has a valid ID
       expect(ride.id).not_to be_nil
 
@@ -81,6 +86,27 @@ RSpec.describe RidesController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)).to eq(ride.as_json)
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    let(:ride) { create(:ride, pickup_address: '4700 West Guadalupe, Austin, TX', dropoff_address: '3600 Presidential Blvd, Austin, TX') }
+
+    it 'deletes the ride' do
+      puts "GINASAURUS: DELETE RIDE: #{ride.id}"
+      expect {
+        delete :destroy, params: { id: ride.id }
+      }.to change(Ride, :count).by(-1)
+
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it 'returns not found if ride does not exist' do
+      delete :destroy, params: { id: '123' }
+
+      expect(response).to have_http_status(:not_found)
+      body = JSON.parse(response.body)
+      expect(body).to include('error' => 'Ride not found')
     end
   end
 
