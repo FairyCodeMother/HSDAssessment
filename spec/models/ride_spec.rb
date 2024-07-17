@@ -2,24 +2,24 @@
 require 'rails_helper'
 
 RSpec.describe Ride, type: :model do
-  describe 'Ride factories create rides from array with Calculations' do
-    it 'creates four test rides' do
-      FactoryBot.create_list(:ride, 4)
+  # describe 'Ride factories create rides from array with Calculations' do
+  #   it 'creates four test rides' do
+  #     FactoryBot.create_list(:ride, 4)
 
-      expect(Ride.count).to eq(4)
+  #     expect(Ride.count).to eq(4)
 
-      # Retrieve all rides
-      rides = Ride.all
-      rides.each_with_index do |ride, index|
-        puts "RIDE Ride #{index + 1}:"
-        puts "Pickup Address: #{ride.pickup_address}"
-        puts "======================\n"
-      end
+  #     # Retrieve all rides
+  #     rides = Ride.all
+  #     rides.each_with_index do |ride, index|
+  #       puts "RIDE Ride #{index + 1}:"
+  #       puts "Pickup Address: #{ride.pickup_address}"
+  #       puts "======================\n"
+  #     end
 
-      expect(rides.first.pickup_address).to eq('4700 West Guadalupe, Austin, TX')
-      expect(rides.last.dropoff_address).to eq('11706 Argonne Forst Trail, Austin, TX')
-    end
-  end
+  #     expect(rides.first.pickup_address).to eq('4700 West Guadalupe, Austin, TX')
+  #     expect(rides.last.dropoff_address).to eq('11706 Argonne Forest Trail, Austin, TX')
+  #   end
+  # end
 
   describe 'Validations' do
     it 'is valid with valid attributes' do

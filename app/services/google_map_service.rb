@@ -38,13 +38,13 @@ class GoogleMapService
   # NOT TESTED!!!
   def get_batch_route_info(queries)
     # queries must be array of hashes: [{origin: '...', destination: '...'}, ...]
-    puts "[GINASAURUS] GMAP get_batch_route_info: queries: #{queries}."
+    # puts "[GINASAURUS] GMAP get_batch_route_info: queries: #{queries}."
 
     # Unique cache key for each query; check if cached
     cache_results = {}
     queries.each do |query|
       cache_key = "route_info/#{query[:origin]}/#{query[:destination]}"
-      puts "[GINASAURUS] GMAP get_batch_route_info: cache_key: #{cache_key}."
+      # puts "[GINASAURUS] GMAP get_batch_route_info: cache_key: #{cache_key}."
 
       cached_data = Rails.cache.read(cache_key)
       if cached_data.present?
@@ -70,7 +70,7 @@ class GoogleMapService
       end
     end
 
-    puts "[GINASAURUS] GMAP get_batch_route_info: cache_results: #{cache_results}."
+    # puts "[GINASAURUS] GMAP get_batch_route_info: cache_results: #{cache_results}."
     cache_results
   rescue StandardError => e
     handle_error(e)

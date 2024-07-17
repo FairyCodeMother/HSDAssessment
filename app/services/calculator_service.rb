@@ -36,6 +36,11 @@ class CalculatorService
   # A route's starting location to destination location
   def calculate_route_metrics(starting_address, ending_address)
     route_info = @gmap.get_route_info(starting_address, ending_address)
+
+    # puts "GINASAURUS CalculatorService: route_info[:miles]: #{route_info[:miles]}."
+
+
+
     route_miles = route_info[:miles].round(2)
     route_minutes = route_info[:minutes].round(2)
 

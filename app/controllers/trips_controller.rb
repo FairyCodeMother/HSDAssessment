@@ -1,31 +1,30 @@
 # app/controllers/trips_controller.rb
 class TripsController < ApplicationController
 
-  # GET /trips
-  def index
-    @all_trips = Trip.all
-    render json: @all_trips
-  rescue StandardError => e
-    render json: { error: e.message }, status: :unprocessable_entity
-  end
-
   def create
-    chauffeur_id = params[:chauffeur_id]
-    ride_id = params[:ride_id]
+    # Validate params
+    if invalid_trip_params?(trip_params)
+      render json: { error: 'Invalid parameters' }, status: :bad_request
+      return
+    end
 
-    @trip = Trip.create_trip_by_ids(chauffeur_id, ride_id)if @trip.save
+    chauffeur_id = trip_params[:chauffeur_id]
+    ride_id = trip_params[:ride_id]
+    # puts "GINASAURUS TripsController: Make Trip using: #{chauffeur_id} cID, #{ride_id} rID."
 
+    @trip = Trip.create_trip_by_ids(chauffeur_id, ride_id)
     if @trip.save
+      # puts "GINASAURUS TripsController: #{@trip.id} ID CREATED"
       render json: @trip, status: :created, location: @trip
     else
+      # puts "GINASAURUS TripsController: TRIP NOT CREATED"
       render json: @trip.errors, status: :unprocessable_entity
     end
 
-    # render json: { message: "Trip created successfully." }, status: :created
   rescue ActiveRecord::RecordNotFound => e
     render json: { error: e.message }, status: :not_found
   rescue StandardError => e
-    render json: { error: e.message }, status: :unprocessable_entity
+    render json: { error: e.message }, status: :bad_request
   end
 
   # DELETE /trips/:id
@@ -39,10 +38,24 @@ class TripsController < ApplicationController
     render json: { error: e.message }, status: :unprocessable_entity
   end
 
+  # GET /trips
+  def index
+    @all_trips = Trip.all
+    render json: @all_trips
+  rescue StandardError => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
   private
 
+  def invalid_trip_params?(params)
+    params.values.any?(&:blank?)
+  end
+
   def trip_params
-    params.require(:trip).permit(:chauffeur_id, :ride_id)
+    trip_params = params.require(:trip).permit(:chauffeur_id, :ride_id)
+    puts "GINASAURUS DEBUG: TripsController: trip_params: #{trip_params}."
+    trip_params
   end
 
 end

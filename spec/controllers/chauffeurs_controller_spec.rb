@@ -20,6 +20,28 @@ RSpec.describe ChauffeursController, type: :controller do
     end
   end
 
+  describe 'DELETE #destroy' do
+    let(:chauffeur) { create(:chauffeur) }
+
+    it 'deletes the chauffeur' do
+      chauffeur_id = chauffeur.id
+      # puts "<<<<<<<<<<< GINASAURUS: Spec DELETE chauffeur: #{chauffeur_id} (Chauffeur count BEFORE: #{Chauffeur.count})"
+
+      expect {
+        delete :destroy, params: { id: chauffeur_id }
+        puts "GINASAURUS DEBUG DELETE: Chauffeur count AFTER: #{Chauffeur.count}. >>>>>>>>>>>>>"
+
+
+      }.to change(Chauffeur, :count).by(-1)
+    end
+
+    it 'returns a success response' do
+      delete :destroy, params: { id: chauffeur.to_param }
+      expect(response).to have_http_status(:no_content)
+    end
+  end
+
+
   describe 'GET #index' do
     it 'returns a success response' do
       get :index
@@ -56,27 +78,12 @@ RSpec.describe ChauffeursController, type: :controller do
     context 'with invalid params' do
       it 'renders a JSON response with errors for the chauffeur' do
         patch :update, params: { id: chauffeur.to_param, chauffeur: { home_address: nil } }
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:bad_request)
         expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
   end
 
 
-  describe 'DELETE #destroy' do
-    let(:chauffeur) { create(:chauffeur) }
-
-    it 'deletes the chauffeur' do
-      puts "GINASAURUS: DELETE chauffeur: #{chauffeur.id}"
-      expect {
-        delete :destroy, params: { id: chauffeur.id }
-      }.to change(Chauffeur, :count).by(-1)
-    end
-
-    it 'returns a success response' do
-      delete :destroy, params: { id: chauffeur.to_param }
-      expect(response).to have_http_status(:no_content)
-    end
-  end
 
 end

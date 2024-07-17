@@ -16,13 +16,13 @@ chauffeurs = [
 ]
 chauffeurs.each do |chauffeur|
   new_chauffeur = Chauffeur.create!(chauffeur)
-  puts "[GINASAURUS] SEED Chauffeur: #{new_chauffeur.id} ID."
+  # puts "[GINASAURUS] SEED Chauffeur: #{new_chauffeur.id} ID."
 
 end
 
 # Seed Rides: IDs are auto generated, distances/durations/earnings are calculated dynamically
 rides = [
-  { pickup_address: '2401 E 6th St, Austin, TX', dropoff_address: '11706 Argonne Forst Trail, Austin, TX' },
+  { pickup_address: '2401 E 6th St, Austin, TX', dropoff_address: '11706 Argonne Forest Trail, Austin, TX' },
   { pickup_address: '4700 West Guadalupe, Austin, TX', dropoff_address: '3600 Presidential Blvd, Austin, TX'},
   { pickup_address: '156 W Cesar Chavez St, Austin, TX', dropoff_address: '3107 E 14th 1/2 St, Austin, TX' },
   { pickup_address: '2325 San Antonio St, Austin, TX', dropoff_address: '4000 S IH 35 Frontage Rd, Austin, TX' }
@@ -40,7 +40,7 @@ rides.each do |ride_data|
   # Calculate earnings
   ride_earnings = calculator.calculate_earnings(route_info[:miles], route_info[:minutes])
 
-  puts "[GINASAURUS] SEED Ride: #{route_info[:miles]} miles, #{route_info[:minutes]} minutes, earnings: $ #{ride_earnings}."
+  # puts "[GINASAURUS] SEED Ride: #{route_info[:miles]} miles, #{route_info[:minutes]} minutes, earnings: $ #{ride_earnings}."
 
   ride_params = {
     pickup_address: pickup_address,
@@ -60,6 +60,6 @@ random_ride = Ride.order('RANDOM()').first
 # Create the Trip
 trip = Trip.create_trip_by_ids(random_chauffeur.id, random_ride.id)
 
-puts "[GINASAURUS] SEED Trip: chauffeur_id: #{trip.chauffeur_id}, ride_id: #{trip.ride_id}, score: #{trip.score}."
+# puts "[GINASAURUS] SEED Trip: chauffeur_id: #{trip.chauffeur_id}, ride_id: #{trip.ride_id}, score: #{trip.score}."
 
 puts "All seed data created!"

@@ -10,18 +10,17 @@ RSpec.describe RidesController, type: :controller do
           # pickup_address: '4700 West Guadalupe, Austin, TX',
           pickup_address: '2401 E 6th St, Austin, TX',
           # dropoff_address: '3600 Presidential Blvd, Austin, TX'
-          dropoff_address: '11706 Argonne Forst Trail, Austin, TX'
+          dropoff_address: '11706 Argonne Forest Trail, Austin, TX'
         }
       }
     end
 
-    it 'creates a new ride with valid params' do
+    it 'creates a new Ride with valid params' do
       # Stub CalculatorService methods to return real values
       allow_any_instance_of(CalculatorService).to receive(:calculate_route_metrics).and_wrap_original do |method, *args|
         result = method.call(*args)
         result || { miles: 0.0, minutes: 0.0 }
       end
-
       allow_any_instance_of(CalculatorService).to receive(:calculate_earnings).and_wrap_original do |method, *args|
         result = method.call(*args)
         result || 0.0
@@ -36,8 +35,6 @@ RSpec.describe RidesController, type: :controller do
       expect(JSON.parse(response.body)).to include('dropoff_address' => valid_params[:ride][:dropoff_address])
     end
 
-
-
     it 'returns unprocessable entity with invalid params' do
       # Stub the CalculatorService methods to return valid values
       allow_any_instance_of(CalculatorService).to receive(:calculate_route_metrics).and_return({ miles: 0.0, minutes: 0.0 })
@@ -49,7 +46,7 @@ RSpec.describe RidesController, type: :controller do
         post :create, params: invalid_params
       }.not_to change(Ride, :count)
 
-      expect(response).to have_http_status(422)
+      expect(response).to have_http_status(:bad_request)
     end
   end
 
@@ -62,7 +59,7 @@ RSpec.describe RidesController, type: :controller do
 
       expect(response).to have_http_status(:ok)
       parsed_response = JSON.parse(response.body)
-      puts "GINASAURUS: R CONTROLLER: #{parsed_response}"
+      # puts "GINASAURUS: R CONTROLLER: #{parsed_response}"
       expect(parsed_response.size).to eq(Ride.count)
     end
   end
@@ -93,9 +90,12 @@ RSpec.describe RidesController, type: :controller do
     let(:ride) { create(:ride, pickup_address: '4700 West Guadalupe, Austin, TX', dropoff_address: '3600 Presidential Blvd, Austin, TX') }
 
     it 'deletes the ride' do
-      puts "GINASAURUS: DELETE RIDE: #{ride.id}"
+      ride_id = ride.id
+      # puts "<<<<<<<<<<< GINASAURUS: Spec DELETE Ride: #{ride_id} (Ride count BEFORE: #{Ride.count})"
+
+
       expect {
-        delete :destroy, params: { id: ride.id }
+        delete :destroy, params: { id: ride_id }
       }.to change(Ride, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)

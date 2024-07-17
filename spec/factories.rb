@@ -34,7 +34,7 @@ FactoryBot.define do
     { pickup_address: '4700 West Guadalupe, Austin, TX', dropoff_address: '3600 Presidential Blvd, Austin, TX'},
     { pickup_address: '156 W Cesar Chavez St, Austin, TX', dropoff_address: '3107 E 14th 1/2 St, Austin, TX' },
     { pickup_address: '2325 San Antonio St, Austin, TX', dropoff_address: '4000 S IH 35 Frontage Rd, Austin, TX' },
-    { pickup_address: '2401 E 6th St, Austin, TX', dropoff_address: '11706 Argonne Forst Trail, Austin, TX'}
+    { pickup_address: '2401 E 6th St, Austin, TX', dropoff_address: '11706 Argonne Forest Trail, Austin, TX'}
   ]
   # Initialize index to iterate through rides_array sequentially
   rides_index = 0
@@ -85,8 +85,34 @@ FactoryBot.define do
     association :chauffeur, factory: [:chauffeur, home_address: '1201 S Lamar Blvd, Austin, TX']
 
     # Use association to create ride with specific pickup_address and dropoff_address
-    association :ride, factory: [:ride, pickup_address: '2401 E 6th St, Austin, TX', dropoff_address: '11706 Argonne Forst Trail, Austin, TX']
+    association :ride, factory: [:ride, pickup_address: '4700 West Guadalupe, Austin, TX', dropoff_address: '3600 Presidential Blvd, Austin, TX']
+
+    # Callback to calculate commute and total attributes
+    after(:build) do |trip|
+      home_address = trip.chauffeur.home_address
+      pickup_address = trip.ride.pickup_address
+      dropoff_address = trip.ride.dropoff_address
+
+      calculator = CalculatorService.new
+
+      # Set up Trip commute
+      commute_metrics = calculator.calculate_route_metrics(home_address, pickup_address)
+      trip.commute_minutes = commute_metrics[:minutes]
+      trip.commute_miles = commute_metrics[:miles]
+
+      # Set up Ride metrics
+      ride_metrics = calculator.calculate_route_metrics(pickup_address, dropoff_address)
+      ride_earnings = calculator.calculate_earnings(ride_metrics[:miles], ride_metrics[:minutes])
+
+      totals_metrics = calculator.calculate_totals(commute_metrics, ride_metrics)
+
+      trip_score = calculator.calculate_score(ride_earnings, totals_metrics[:total_miles])
+
+      # Example calculation for total attributes (adjust according to your logic)
+      trip.total_hours = totals_metrics[:total_hours]
+      trip.total_minutes = totals_metrics[:total_minutes]
+      trip.total_miles = totals_metrics[:total_miles]
+      trip.score = trip_score
+    end
   end
-
-
 end

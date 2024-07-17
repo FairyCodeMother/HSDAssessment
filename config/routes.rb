@@ -8,9 +8,14 @@ Rails.application.routes.draw do
   resources :trips, only: [:index, :show, :create, :update, :destroy]
 
   # GET Trips by chauffeur_id (/chauffeurs/:id/trips)
-  resources :chauffeurs, only: [:index, :show, :create, :update, :destroy] do
-    get 'trips', to: 'chauffeurs#create_trips_by_chauffeur_id', on: :member
-  end
+  # resources :chauffeurs, only: [:index, :show, :create, :update, :destroy] do
+  #   get 'trips', to: 'chauffeurs#create_trips_by_chauffeur_id', on: :member
+  # end
+    # GET and POST Trips by chauffeur_id (/chauffeurs/:id/trips)
+    resources :chauffeurs, only: [:index, :show, :create, :update, :destroy] do
+      get 'trips', to: 'chauffeurs#create_trips_by_chauffeur_id', on: :member
+      post 'trips', to: 'trips#create', on: :member
+    end
 
   # Health check route
   get "up" => "rails/health#show", as: :rails_health_check

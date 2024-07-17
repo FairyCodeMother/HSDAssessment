@@ -36,7 +36,7 @@ RSpec.describe Trip, type: :model do
       chauffeur = create(:chauffeur, home_address: '1201 S Lamar Blvd, Austin, TX')
 
       # Create specific test ride
-      ride = create(:ride, pickup_address: '2401 E 6th St, Austin, TX', dropoff_address: '11706 Argonne Forst Trail, Austin, TX')
+      ride = create(:ride, pickup_address: '2401 E 6th St, Austin, TX', dropoff_address: '11706 Argonne Forest Trail, Austin, TX')
 
       # Ensure chauffeur and ride are created
       expect(chauffeur).to be_present
@@ -45,8 +45,16 @@ RSpec.describe Trip, type: :model do
       # Calculate expected values using CalculatorService
       calculator = CalculatorService.new
       commute = calculator.calculate_route_metrics(chauffeur.home_address, ride.pickup_address)
+
+      # puts "GINASAURUS TripSpec.create_trip_by_ids: commute: #{commute}"
+
+
+
       commute[:miles] = commute[:miles].round(2)
       commute[:minutes] = commute[:minutes].round(2)
+
+
+
       totals = calculator.calculate_totals(commute, { miles: ride.ride_miles, minutes: ride.ride_minutes })
       score = calculator.calculate_score(ride.ride_earnings, totals[:total_miles]).round(2)
 
@@ -58,16 +66,16 @@ RSpec.describe Trip, type: :model do
       puts "Trip errors: #{trip.errors.full_messages}" unless trip.persisted?
       expect(trip).to be_persisted
 
-      trips = Trip.all
-      trips.each_with_index do |trip, index|
-        puts "TRIP Trip #{index + 1}: ID: #{trip.id}"
-        puts "chauffeur_id: #{trip.chauffeur_id}"
-        puts "ride_id: #{trip.ride_id}"
-        puts "commute_minutes: #{trip.commute_minutes}"
-        puts "total_minutes: #{trip.total_minutes}"
-        puts "score: #{trip.score}"
-        puts "======================\n"
-      end
+      # trips = Trip.all
+      # trips.each_with_index do |trip, index|
+      #   puts "TRIP Trip #{index + 1}: ID: #{trip.id}"
+      #   puts "chauffeur_id: #{trip.chauffeur_id}"
+      #   puts "ride_id: #{trip.ride_id}"
+      #   puts "commute_minutes: #{trip.commute_minutes}"
+      #   puts "total_minutes: #{trip.total_minutes}"
+      #   puts "score: #{trip.score}"
+      #   puts "======================\n"
+      # end
 
 
       # Expect the trip attributes to match the calculated values

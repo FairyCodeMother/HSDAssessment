@@ -42,6 +42,8 @@ class Trip < ApplicationRecord
       earnings: ride.ride_earnings,
       score: score
     )
+    # puts "GINASAURUS DEBUG: TripModel: created #{@trip.id} tID"
+    # @trip
   end
 
   private
