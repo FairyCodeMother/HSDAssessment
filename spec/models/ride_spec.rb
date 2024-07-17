@@ -2,36 +2,46 @@
 require 'rails_helper'
 
 RSpec.describe Ride, type: :model do
-  describe 'factories' do
+  describe 'Ride factories create rides from the array' do
+    it 'creates four test rides' do
+      FactoryBot.create_list(:ride, 4)
 
-    it 'creates rides from the array with calculated ride minutes and miles' do
-      # Create a ride using the factory with the :from_array trait
-      create(:ride, :from_array)
+      expect(Ride.count).to eq(4)
 
-      # Expectation: Check if the ride was created
-      expect(Ride.count).to eq(3) # Check if 3 rides were created from the array
+      # Retrieve all rides
+      rides = Ride.all
+      rides.each_with_index do |ride, index|
+        puts "Ride #{index + 1}:"
+        puts "Pickup Address: #{ride.pickup_address}"
+        # puts "Dropoff Address: #{ride.dropoff_address}"
+        # puts "Ride Minutes: #{ride.ride_minutes}"
+        # puts "Ride Miles: #{ride.ride_miles}"
+        # puts "Ride Earnings: #{ride.ride_earnings}"
+        puts "------------------"
+      end
 
-      # Optional: Output the created rides for inspection
-      # Ride.all.each do |ride|
-      #   puts "Ride ID: #{ride.id}, Pickup Address: #{ride.pickup_address}, Dropoff Address: #{ride.dropoff_address}, Ride Minutes: #{ride.ride_minutes}, Ride Miles: #{ride.ride_miles}"
-      # end
-
-      # Additional expectations based on your requirements:
-      # - Check if ride_minutes and ride_miles are calculated correctly
-      # - Check other attributes as needed
-      # expect(Ride.first.ride_minutes).to be_present
-      # expect(Ride.first.ride_miles).to be_present
+      expect(rides.first.pickup_address).to eq('2401 E 6th St, Austin, TX')
+      expect(rides.last.dropoff_address).to eq('4000 S IH 35 Frontage Rd, Austin, TX')
     end
-  end
+
+    # Test for the presence validations
+    # context 'validations' do
+    #   it 'is valid with valid attributes' do
+    #     ride = build(:ride)
+    #     expect(ride).to be_valid
+    #   end
+    # end
+
+end
 
 
 
-  # # Test for the presence validations
-  # context 'validations' do
-  #   it 'is valid with valid attributes' do
-  #     ride = build(:ride)
-  #     expect(ride).to be_valid
-  #   end
+# # Example of further assertions based on your application logic
+# # You can assert specific attributes or behaviors here
+# expect(rides.first.pickup_address).to eq('2401 E 6th St, Austin, TX')
+# expect(rides.last.dropoff_address).to eq('4000 S IH 35 Frontage Rd, Austin, TX')
+
+
 
   #   it 'is not valid without a pickup_address' do
   #     ride = build(:ride, pickup_address: nil)
@@ -109,9 +119,3 @@ RSpec.describe Ride, type: :model do
   #     expect(ride.id).to eq(id)
   #   end
   # end
-
-
-
-
-
-end

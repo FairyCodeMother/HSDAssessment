@@ -33,21 +33,32 @@ FactoryBot.define do
   rides_array = [
     { pickup_address: '4700 West Guadalupe, Austin, TX', dropoff_address: '3600 Presidential Blvd, Austin, TX'},
     { pickup_address: '156 W Cesar Chavez St, Austin, TX', dropoff_address: '3107 E 14th 1/2 St, Austin, TX' },
-    { pickup_address: '2325 San Antonio St, Austin, TX', dropoff_address: '4000 S IH 35 Frontage Rd, Austin, TX' }
+    { pickup_address: '2325 San Antonio St, Austin, TX', dropoff_address: '4000 S IH 35 Frontage Rd, Austin, TX' },
+    { pickup_address: '2401 E 6th St, Austin, TX', dropoff_address: '11706 Argonne Forst Trail, Austin, TX'}
   ]
+  # Initialize index to iterate through rides_array sequentially
+  rides_index = 0
+
   factory :ride do
+    # Default attributes
     sequence(:id) { |n| "r#{SecureRandom.uuid}" }
-    pickup_address { '2401 E 6th St, Austin, TX' }
-    dropoff_address { '11706 Argonne Forst Trail, Austin, TX' }
+    pickup_address { rides_array[rides_index][:pickup_address] }
+    dropoff_address { rides_array[rides_index][:dropoff_address] }
     ride_minutes { Faker::Number.decimal(l_digits: 1, r_digits: 2).to_f } # Placeholder
     ride_miles { Faker::Number.decimal(l_digits: 1, r_digits: 2).to_f }   # Placeholder
     ride_earnings { Faker::Number.decimal(l_digits: 2, r_digits: 2).to_f }
 
+    # Increment index for the next ride
+    after(:create) do |ride|
+      rides_index = (rides_index + 1) % rides_array.size
+    end
+
+    # Create Rides from list
     trait :from_array do
       transient { rides { rides_array } }
 
       after(:create) do |ride, evaluator|
-        evaluator.rides.each do |ride_attributes|
+        evaluator.rides.each_with_index do |ride_attributes, index|
           pickup = ride_attributes[:pickup_address]
           dropoff = ride_attributes[:dropoff_address]
 
