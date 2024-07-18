@@ -2,13 +2,17 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 
+
 ENV['RAILS_ENV'] ||= 'test'
+require_relative '../config/environment'
 require_relative '../config/environment'
 
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
+
 require 'rspec/rails'
+
 
 # Add additional requires below this line. Rails is not loaded until this point!
 require 'factory_bot'
@@ -40,10 +44,16 @@ RSpec.configure do |config|
 
     # DatabaseCleaner: Clean the database between tests
     DatabaseCleaner.clean_with(:truncation)
+    # Dockerized "remote" URL
+    DatabaseCleaner.allow_remote_database_url = true
+
+    # DatabaseCleaner: Clean the database between tests
+    DatabaseCleaner.clean_with(:truncation)
   end
 
   config.before(:each) do
     DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.start
     DatabaseCleaner.start
   end
 
@@ -51,6 +61,9 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :truncation
   end
 
+  # config.before(:each) do
+  #   DatabaseCleaner.start
+  # end
   # config.before(:each) do
   #   DatabaseCleaner.start
   # end
