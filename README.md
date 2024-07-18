@@ -6,83 +6,139 @@ HopSkipChallenge develops a RESTful API endpoint for managing Rides and Trips wi
 
 - [HopSkipChallenge](#hopskipchallenge)
   - [Table of Contents](#table-of-contents)
-  - [Rails Assessment](#rails-assessment)
+  - [API Endpoint Documentation: Fetch Trips by Chauffeur ID](#api-endpoint-documentation-fetch-trips-by-chauffeur-id)
+    - [Description](#description)
+    - [Endpoint URL](#endpoint-url)
+    - [Parameters](#parameters)
+    - [Response](#response)
+    - [Error Handling](#error-handling)
+- [Rails Assessment](#rails-assessment)
   - [Project Overview](#project-overview)
-  - [Acceptance Criteria](#acceptance-criteria)
+    - [Acceptance Criteria](#acceptance-criteria)
+    - [My Checklist](#my-checklist)
     - [Project Definitions](#project-definitions)
   - [API Endpoints](#api-endpoints)
-    - [Drivers](#drivers)
+    - [Chauffeurs](#chauffeurs)
     - [Rides](#rides)
     - [Trips](#trips)
   - [Database](#database)
     - [Models](#models)
-      - [Driver](#driver)
+      - [Chauffeurs](#chauffeurs-1)
       - [Ride](#ride)
       - [Trip](#trip)
-    - [Migrations](#migrations)
-    - [Seed Data](#seed-data)
 
-## Rails Assessment
+<br>
 
-Unlike many other rideshares, HopSkipDrive is a scheduled ride service and not an on-demand ride service. In our app for drivers, we show them a list of upcoming rides and they can pick the ones they want. Our goal is to show them the best rides for each driver first, so to that end we have an internal scoring system. In this exercise you will be implementing a slimmed down version of it
+## API Endpoint Documentation:<br> Fetch Trips by Chauffeur ID
 
-**Prompt**
+### Description
 
-The primary goal of this exercise is for you to demonstrate how you think about testing, readability, and structuring a Rails application. We are also evaluating your ability to understand and implement requirements.
+This endpoint retrieves a list of Trips associated with a specific Chauffeur identified by their ID.
 
+### Endpoint URL
+
+- **Request**: `GET /chauffeurs/:id/trips`
+- **Example**: `/chauffeurs/c123/trips?page=1&per_page=10`
+
+
+### Parameters
+- **id** (required, integer): The unique identifier of the Chauffeur for whom trips are being fetched.
+
+### Response
+The API returns a JSON array containing Trip objects. Each Trip object includes details such as Trip ID, Chauffeur ID, Ride ID, commute details, total details, Ride earnings, and score.
+
+**Example response:** earnings, and score.
+
+**Example response:**
+```json
+[
+  {
+      "id": "t13580140-ca2a-462c-a21d-057a504f4ff1",
+      "chauffeur_id": "ca5324861-b102-403c-ba11-dd462230b11b",
+      "ride_id": "r44ef863a-e7e7-45f7-a9f3-792445cf31d3",
+      "commute_minutes": "18.0",
+      "commute_miles": "10.3",
+      "total_minutes": "38.0",
+      "total_hours": "0.63",
+      "total_miles": "24.3",
+      "earnings": "29.0",
+      "score": "1.19",
+      "created_at": "2024-07-18T02:26:20.050Z",
+      "updated_at": "2024-07-18T02:26:20.050Z"
+  },
+  {
+      "id": "tfef6fb4f-23fc-4984-9609-5045da0c8295",
+      "chauffeur_id": "ca5324861-b102-403c-ba11-dd462230b11b",
+      "ride_id": "r8653e848-c453-49b7-ad83-e7a6d2afa6c1",
+      "commute_minutes": "21.0",
+      "commute_miles": "15.0",
+      "total_minutes": "43.0",
+      "total_hours": "0.72",
+      "total_miles": "30.1",
+      "earnings": "32.05",
+      "score": "1.06",
+      "created_at": "2024-07-18T02:26:19.715Z",
+      "updated_at": "2024-07-18T02:26:19.715Z"
+  }, ...
+  // More trip objects...
+]
+```
+### Error Handling
+**404 Not Found**: If the Chauffeur with the specified ID does not exist.
+
+**500 Internal Server Error**: If there is a server-side issue.
+
+<br>
+
+# Rails Assessment
 
 ## Project Overview
 
-Key features include:
-
-- **Drivers**: Management of drivers with home addresses.
-- **Rides**: Creation and management of rides with pickup and destination addresses (Google Maps API for distance and duration calculations).
-- **Trips**: Association between drivers and rides, storing commute and trip details.
-
-## Acceptance Criteria
+### Acceptance Criteria
 
  - [x] Project uses Ruby 3+ and Rails 7
- - Ride
+ - Ride: `Ride`
    - [x] Has an id (`:id`)
    - [x] Has a start address (`:pickup_address`)
    - [x] Has a destination address (`:dropoff_address`)
- - Driver
+ - Driver: `Chauffeur`
    - [x] Has an id (`:id`)
    - [x] Has a home address (`:home_address`)
  - API
+   - [x] Endpoint accepts a driver and returns a list of Trips: `/chauffeurs/:id/trips?page=1&per_page=10`
    - [x] API is RESTful
-   - [x] API returns a paginated JSON list of rides in descending score order for a given driver
+   - [x] API returns a paginated JSON list for a given driver
+   - [x] Returned list is in descending score order
    - [x] API documentation MarkDown 
  - [x] Calculate the `score` of a ride in $ per hour. Higher is better.
-   - (ride earnings) / (commute duration + ride duration)
+   - `score` = (ride earnings) / (commute duration + ride duration)
  - [x] Google Maps is expensive. Consider how you can reduce duplicate API calls
-   - [x] Caching
-   - [x] Batched calls (untested)
- - [ ] Include RSpec tests
-
-
-Packaging
-Please create a private github repo with your code and packaged assets and share it with @jacobkg
-
-Create a Rails 7 application, using Ruby 3+
- - [x] Include the following entities:
-   - [x] Ride: `Ride`
-     - [x] Has an id, a start address (`:pickup_address`) and a destination address (`:dropoff_address`). You may end up adding additional information
-   - [x] Driver: `Chauffeur`
-     - [x] Has an id and a home address (`:home_address`)
- - [x] Build a RESTful API endpoint that returns a paginated JSON list of rides in descending score order for a given driver: `/chauffeurs/:id/trips?page=1&per_page=10`
- - [x] Please write up API documentation for this endpoint in MarkDown or alternative
- - [x] Calculate the score of a ride in $ per hour as: (**ride earnings**) / (**commute duration** + **ride duration**). Higher is better
-
- - [x] Google Maps is expensive. Consider how you can reduce duplicate API calls
-
+    - [x] Caching
+    - [x] Batched calls (untested)
  - [x] Include RSpec tests
+ - [ ] Packaging: Create a private github repo and share it with @jacobkg
 
+<br>
+
+
+### My Checklist
+
+ - [x] All Methods/Actions have error handling.
+ - [x] Controllers focus on handling requests.
+ - [x] RESTful statuses
+   - [x] Create = :created
+   - [x] Update = :ok
+ - [x] Has validations/verifications
+   - [x] Models
+   - [x] Controllers
+   - [x] Services
+ - [x] Clean up my comments/housekeeping
 
 
 ### Project Definitions
+
 - A `Ride` has a unique id, a start address and a destination address. (We may end up adding additional information).
-- A `Driver` has a unique id and a home address.
+- A `Chauffeur` has a unique id and a home address.
 - The `driving distance` between two addresses is the distance in miles that it would take to drive a reasonably efficient route between them. It is not the straight line distance. It can be calculated by using a routing service
 - The `driving duration` between two addresses is the amount of time in hours it would take to drive the driving distance under realistic driving conditions. It can be calculated by using a routing service
 - The `commute distance` for a ride is the driving distance from the driver’s home address to the start of the ride, in miles
@@ -95,40 +151,47 @@ Create a Rails 7 application, using Ruby 3+
       - *$12 + ($1.50 * (`ride_distance` - 5 miles)) + ($0.70 * (`ride_duration` - 15 minutes)*
 
 
+Key features include:
+
+- **Chauffeurs**: Management of Chauffeurs with home addresses.
+- **Rides**: Creation and management of Rides with pickup and dropoff addresses (Google Maps API for distance and duration calculations).
+- **Trips**: Association between Chauffeurs and Rides, storing commute and ride details.
+
+
+
 ## API Endpoints
-I've included a Postman file for convenience.
+I've included a Postman file for convenience for the most pertinent actions: `HopSkipChallenge.postman_collection.json`
 
-### Drivers
-
-- **List all drivers**: `GET /chauffeurs`
-- **Create a new driver**: `POST /chauffeurs`
+### Chauffeurs
+- Create Chauffeur: `POST /chauffeurs`
+- Create all Trips for Chauffeurs: `GET /chauffeurs/:id/trips`
+- Destroy Chauffeur by ID: `DELETE /chauffeurs/:id`
+- Fetch all Chauffeurs: `GET /chauffeurs`
+- Fetch Chauffeur by ID: `GET /chauffeurs/:id`
+- Update Chauffeur by ID: `PATCH/PUT /chauffeurs/:id`
 
 ### Rides
-
-- **List all rides**: `GET /rides`
-- **Create a new ride**: `POST /rides`
-- **Show details of a ride**: `GET /rides/:id`
-- **Update a ride**: `PUT /rides/:id`
-- **Delete a ride**: `DELETE /rides/:id`
+- Create Ride: `POST /rides`
+- Destroy Ride by ID: `DELETE /rides/:id`
+- Fetch all Rides: `GET /rides`
+- Fetch Ride by ID: `GET /rides/:id`
+- Update Ride by ID: `PATCH/PUT /rides/:id`
 
 ### Trips
-
-- **List all trips**: `GET /trips`
-- **Create a new trip**: `POST /trips`
-- **Show details of a trip**: `GET /trips/:id`
-- **Update a trip**: `PUT /trips/:id`
-- **Delete a trip**: `DELETE /trips/:id`
+- Create Trip: `POST /trips`
+- Destroy Trip by ID: `DELETE /trips/:id`
+- Fetch all Trips: `GET /trips`
 
 ## Database
 
 ### Models
 
-#### Driver
+#### Chauffeurs
 
-The `Driver` model represents a driver in the system.
+The `Chauffeurs` model represents a driver (chauffeur) in the system.
 
 - **Attributes**:
-  - `id`: Unique identifier (string)
+  - `id`: Unique identifier (string, starts with "c")
   - `home_address`: Address of the driver's home (string)
 
 - **Associations**:
@@ -136,14 +199,15 @@ The `Driver` model represents a driver in the system.
 
 #### Ride
 
-The `Ride` model represents a ride in the system.
+The `Ride` model represents a route in the system.
 
 - **Attributes**:
-  - `id`: Unique identifier (string)
+  - `id`: Unique identifier (string, starts with "r")
   - `pickup_address`: Address where the ride starts (string)
   - `dropoff_address`: Address where the ride ends (string)
   - `ride_minutes`: Duration of the ride in minutes (decimal)
   - `ride_miles`: Distance of the ride in miles (decimal)
+  - `ride_earnings`: Earnings value of the route in dollars (decimal)
 
 - **Associations**:
   - `has_many :trips`
@@ -153,35 +217,24 @@ The `Ride` model represents a ride in the system.
 The `Trip` model represents a trip taken by a driver for a specific ride.
 
 - **Attributes**:
-  - `id`: Unique identifier (string)
-  - `driver_id`: Foreign key referencing `Driver` (string)
+  - `id`: Unique identifier (string, starts with "t")
+  - `chauffeur_id`: Foreign key referencing `Chauffeur` (string)
   - `ride_id`: Foreign key referencing `Ride` (string)
   - `commute_minutes`: Duration of the driver's commute in minutes (decimal)
   - `commute_miles`: Distance of the driver's commute in miles (decimal)
   - `total_minutes`: Total duration of the trip in minutes (decimal)
   - `total_hours`: Total duration of the trip in hours (decimal)
   - `total_miles`: Total distance of the trip in miles (decimal)
-  - `earnings`: Earnings for the trip (decimal)
+  - `score`: Represents the value of the trip, higher is more desirable (decimal)
 
 - **Associations**:
-  - `belongs_to :driver`
+  - `belongs_to :chauffeur`
   - `belongs_to :ride`
 
-### Migrations
-
-The database schema is managed using ActiveRecord migrations. Each model has its own migration file to define its table structure and constraints.
-
-- `db/migrate/YYYYMMDDHHMMSS_create_chauffeurs.rb`: Defines the `drivers` table.
-- `db/migrate/YYYYMMDDHHMMSS_create_rides.rb`: Defines the `rides` table.
-- `db/migrate/YYYYMMDDHHMMSS_create_trips.rb`: Defines the `trips` table.
-
-### Seed Data
-
-The seed data initializes the database with sample records for drivers and rides. It calculates dynamic values such as ride distances and durations using the Google Maps API.
-
-- `db/seeds.rb`: Seeds the database with sample `Driver` and `Ride` records.
+<br>
 
 ------------
 
 **Personal Note:**
+
 *I spent (probably) too much time in version conflicts. In the end, I decided to just make a Docker'ed project and bypass the issue. There's nothing in the assignment about containerizing, so I hope this direction is acceptable.*

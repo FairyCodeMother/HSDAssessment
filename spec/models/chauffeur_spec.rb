@@ -4,7 +4,7 @@ require 'rails_helper'
 RSpec.describe Chauffeur, type: :model do
   describe 'factories' do
     it 'creates chauffeurs from the array' do
-      create(:chauffeur, :from_array) # This will create the initial chauffeur and the ones from the array
+      create(:chauffeur, :from_array)
       expect(Chauffeur.count).to eq(5) # 1 initial + 4 array
     end
   end
@@ -36,12 +36,4 @@ RSpec.describe Chauffeur, type: :model do
     end
   end
 
-  # Chauffeur CAN have many Trips
-  # describe 'associations' do
-  #   it { should have_many(:trips) }
-  # end
-
-
 end
-
-# GINASAURUS: docker-compose run web rspec

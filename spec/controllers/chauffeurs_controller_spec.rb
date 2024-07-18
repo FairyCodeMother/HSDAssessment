@@ -5,7 +5,6 @@ RSpec.describe ChauffeursController, type: :controller do
 
   describe 'POST #create' do
     context 'with valid params' do
-
       it 'creates a new Chauffeur' do
         expect {
           post :create, params: { chauffeur: attributes_for(:chauffeur) }
@@ -20,18 +19,53 @@ RSpec.describe ChauffeursController, type: :controller do
     end
   end
 
+  describe 'GET #create_trips_by_chauffeur_id' do
+    let!(:chauffeur) { create(:chauffeur, :home_address) }
+    let!(:rides) { create_list(:ride, 3) }
+
+    before do
+      rides.each do |ride|
+        create(:trip, chauffeur: chauffeur, ride: ride)
+      end
+    end
+
+    context 'when chauffeur and rides exist' do
+      it 'returns a paginated JSON list of trips in descending score order' do
+        get :create_trips_by_chauffeur_id, params: { id: chauffeur.id, page: 1, per_page: 3 }
+
+        expect(response).to have_http_status(:ok)
+        json_response = JSON.parse(response.body)
+        expect(json_response.size).to eq(3) # Assumes per_page is 3
+
+        # Ensure descending order by score
+        scores = json_response.map { |trip| trip['score'].to_f } # Convert scores to float for accurate numeric sorting
+        sorted_scores = scores.sort.reverse # Sort scores in descending order
+
+        expect(scores).to eq(sorted_scores)
+      end
+    end
+
+    context 'when there is an internal server error' do
+      it 'returns an internal server error' do
+        allow_any_instance_of(Chauffeur).to receive(:get_all_chauffeur_rides).and_raise(ActiveRecord::StatementInvalid)
+
+        get :create_trips_by_chauffeur_id, params: { id: chauffeur.id, page: 1, per_page: 3 }
+
+        expect(response).to have_http_status(:internal_server_error)
+        expect(json_response['error']).to eq('An error occurred while processing your request')
+      end
+    end
+
+  end
+
   describe 'DELETE #destroy' do
     let(:chauffeur) { create(:chauffeur) }
 
     it 'deletes the chauffeur' do
       chauffeur_id = chauffeur.id
-      # puts "<<<<<<<<<<< GINASAURUS: Spec DELETE chauffeur: #{chauffeur_id} (Chauffeur count BEFORE: #{Chauffeur.count})"
 
       expect {
         delete :destroy, params: { id: chauffeur_id }
-        puts "GINASAURUS DEBUG DELETE: Chauffeur count AFTER: #{Chauffeur.count}. >>>>>>>>>>>>>"
-
-
       }.to change(Chauffeur, :count).by(-1)
     end
 
@@ -40,7 +74,6 @@ RSpec.describe ChauffeursController, type: :controller do
       expect(response).to have_http_status(:no_content)
     end
   end
-
 
   describe 'GET #index' do
     it 'returns a success response' do
@@ -84,6 +117,8 @@ RSpec.describe ChauffeursController, type: :controller do
     end
   end
 
-
+  def json_response
+    JSON.parse(response.body)
+  end
 
 end

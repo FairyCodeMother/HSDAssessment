@@ -2,24 +2,28 @@
 require 'rails_helper'
 
 RSpec.describe Ride, type: :model do
-  # describe 'Ride factories create rides from array with Calculations' do
-  #   it 'creates four test rides' do
-  #     FactoryBot.create_list(:ride, 4)
+  describe 'Ride factories create rides from array with Calculations' do
+    it 'creates test rides' do
+      FactoryBot.create_list(:ride, 4)
 
-  #     expect(Ride.count).to eq(4)
+      expect(Ride.count).to eq(4)
 
-  #     # Retrieve all rides
-  #     rides = Ride.all
-  #     rides.each_with_index do |ride, index|
-  #       puts "RIDE Ride #{index + 1}:"
-  #       puts "Pickup Address: #{ride.pickup_address}"
-  #       puts "======================\n"
-  #     end
+      puts "ALL RIDES:::::::::::::::::::"
+      rides = Ride.all
+      rides.each_with_index do |ride, index|
+        puts "Ride #{index + 1}: Pickup Address - #{ride.pickup_address}, Dropoff Address - #{ride.dropoff_address}"
+      end
 
-  #     expect(rides.first.pickup_address).to eq('4700 West Guadalupe, Austin, TX')
-  #     expect(rides.last.dropoff_address).to eq('11706 Argonne Forest Trail, Austin, TX')
-  #   end
-  # end
+      # Extract pickup addresses into an array
+      pickup_addresses = rides.map(&:pickup_address)
+
+      # Factory isn't making "clones": different pickup_addresses
+      expect(pickup_addresses).to include('4700 West Guadalupe, Austin, TX')
+      expect(pickup_addresses).to include('156 W Cesar Chavez St, Austin, TX')
+      expect(pickup_addresses).to include('2325 San Antonio St, Austin, TX')
+      expect(pickup_addresses).to include('2401 E 6th St, Austin, TX')
+    end
+  end
 
   describe 'Validations' do
     it 'is valid with valid attributes' do
