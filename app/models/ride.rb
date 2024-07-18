@@ -4,8 +4,7 @@ class Ride < ApplicationRecord
   has_many :trips
 
   validates :pickup_address, :dropoff_address, presence: true
-  validates :ride_minutes, :ride_miles, presence: true
-  validates :ride_minutes, :ride_miles, :ride_earnings, numericality: { greater_than: 0 }
+  validates :ride_minutes, :ride_miles, :ride_earnings, presence: true, numericality: { greater_than: 0 }
 
   self.primary_key = 'id'
 

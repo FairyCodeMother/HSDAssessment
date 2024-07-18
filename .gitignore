@@ -36,3 +36,7 @@
 
 .DS_Store
 /NOTES.txt
+/log
+/storage
+/vendor
+Gemfile.lock

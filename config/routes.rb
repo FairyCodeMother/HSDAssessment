@@ -7,9 +7,11 @@ Rails.application.routes.draw do
   # Trips endpoints
   resources :trips, only: [:index, :show, :create, :update, :destroy]
 
-  # GET Trips by chauffeur_id (/chauffeurs/:id/trips)
-  resources :chauffeurs, only: [] do
+  # Chauffeurs endpoints
+  resources :chauffeurs, only: [:index, :show, :create, :update, :destroy] do
+    # GET Trips by chauffeur_id (/chauffeurs/:id/trips)
     get 'trips', to: 'chauffeurs#create_trips_by_chauffeur_id', on: :member
+    post 'trips', to: 'trips#create', on: :member
   end
 
   # Health check route
